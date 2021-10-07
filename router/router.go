@@ -11,7 +11,7 @@ import (
 func Setup() *echo.Echo {
 	e := newEcho()
 
-	e.GET("/ping", func(c echo.Context) error {
+	e.POST("/ping", func(c echo.Context) error {
 		return c.NoContent(http.StatusNoContent)
 	})
 
