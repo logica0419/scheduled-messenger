@@ -7,15 +7,16 @@ import (
 )
 
 const (
-	pingEvent = "PING"
+	pingEvent = "PING" //PING イベント
 )
 
+// Botのハンドラ (ヘッダーの "X-TRAQ-BOT-EVENT" を見てイベントごとにハンドラを割り振る)
 func botEventHandler(c echo.Context) error {
 	err := func() error {
 		switch c.Request().Header.Get(botEventHeader) {
-		case pingEvent:
+		case pingEvent: //PING イベント
 			return pingHandler(c)
-		default:
+		default: // 未実装のイベント
 			return c.JSON(http.StatusNotImplemented, errorMessage{Message: "not implemented"})
 		}
 	}()
@@ -23,6 +24,7 @@ func botEventHandler(c echo.Context) error {
 	return err
 }
 
+// PING イベントハンドラ
 func pingHandler(c echo.Context) error {
 	return c.NoContent(http.StatusNoContent)
 }

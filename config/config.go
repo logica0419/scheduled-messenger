@@ -17,10 +17,10 @@ type Config struct {
 	Bot_Access_Token string `json:"bot_access_token,omitempty"`
 }
 
-var C *Config
+var C *Config // 設定格納用変数
 
+// デフォルト値の設定
 func init() {
-	// デフォルト値の設定
 	viper.SetDefault("Dev_Mode", false)
 	viper.SetDefault("Verification_Token", "")
 	viper.SetDefault("Bot_Access_Token", "")

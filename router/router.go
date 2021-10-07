@@ -13,6 +13,7 @@ const (
 	contentTypeHeader = "Content-Type"
 )
 
+// ルーター
 type Router struct {
 	e      *echo.Echo
 	Config *config.Config
@@ -32,6 +33,7 @@ func Setup() *Router {
 	return r
 }
 
+// 新しい Echo インスタンスを取得
 func newEcho() *echo.Echo {
 	e := echo.New()
 
@@ -42,6 +44,7 @@ func newEcho() *echo.Echo {
 	return e
 }
 
+// 新しいルーターを取得
 func newRouter() *Router {
 	e := newEcho()
 
@@ -50,6 +53,7 @@ func newRouter() *Router {
 	return &r
 }
 
+// ルーターを起動
 func (r *Router) Start() {
 	r.e.Logger.Panic(r.e.Start(":8080"))
 }
