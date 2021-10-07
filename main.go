@@ -2,14 +2,20 @@ package main
 
 import (
 	"fmt"
+	"log"
 
+	"github.com/logica0419/scheduled-messenger-bot/config"
 	"github.com/logica0419/scheduled-messenger-bot/router"
 )
 
 func main() {
-	fmt.Println("Initializing Scheduled Messenger Bot...")
+	fmt.Print("Initializing Scheduled Messenger Bot...")
 
-	e := router.Setup()
+	if err := config.GetConfig(); err != nil {
+		log.Panic(err)
+	}
 
-	e.Logger.Panic(e.Start(":8080"))
+	r := router.Setup()
+
+	r.Start()
 }
