@@ -1,21 +1,35 @@
 package router
 
 import (
-	"net/http"
-
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	"github.com/labstack/gommon/log"
+	"github.com/logica0419/scheduled-messenger-bot/config"
 )
 
-func Setup() *echo.Echo {
-	e := newEcho()
+const (
+	botTokenHeader    = "X-TRAQ-BOT-TOKEN"
+	botEventHeader    = "X-TRAQ-BOT-EVENT"
+	contentTypeHeader = "Content-Type"
+)
 
-	e.POST("/ping", func(c echo.Context) error {
-		return c.NoContent(http.StatusNoContent)
-	})
+type Router struct {
+	e      *echo.Echo
+	Config *config.Config
+}
 
-	return e
+type errorMessage struct {
+	Message string `json:"message,omitempty"`
+}
+
+var r *Router
+
+func Setup() *Router {
+	r = newRouter()
+
+	r.e.POST("/", botEventHandler, requestVerification)
+
+	return r
 }
 
 func newEcho() *echo.Echo {
@@ -26,4 +40,16 @@ func newEcho() *echo.Echo {
 	e.Use(middleware.LoggerWithConfig(middleware.LoggerConfig{Format: "${time_rfc3339} method = ${method} | uri = ${uri} | status = ${status} ${error}\n"}))
 
 	return e
+}
+
+func newRouter() *Router {
+	e := newEcho()
+
+	r := Router{e: e, Config: config.C}
+
+	return &r
+}
+
+func (r *Router) Start() {
+	r.e.Logger.Panic(r.e.Start(":8080"))
 }
