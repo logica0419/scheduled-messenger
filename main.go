@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"log"
 
 	"github.com/logica0419/scheduled-messenger-bot/config"
@@ -9,7 +8,7 @@ import (
 )
 
 func main() {
-	fmt.Print("Initializing Scheduled Messenger Bot...")
+	log.Print("Initializing Scheduled Messenger Bot...")
 
 	if err := config.GetConfig(); err != nil {
 		log.Panic(err)
