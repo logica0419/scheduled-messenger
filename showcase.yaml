@@ -1,0 +1,4 @@
+type: "runtime"
+use_mariadb: true
+entrypoint: go run ./*.go
+http_proxy: 8080
