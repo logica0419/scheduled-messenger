@@ -19,15 +19,13 @@ type Config struct {
 
 var C *Config // 設定格納用変数
 
-// デフォルト値の設定
-func init() {
+// 設定を読み込み
+func GetConfig() error {
+	// デフォルト値の設定
 	viper.SetDefault("Dev_Mode", false)
 	viper.SetDefault("Verification_Token", "")
 	viper.SetDefault("Bot_Access_Token", "")
-}
 
-// 設定を読み込み
-func GetConfig() error {
 	// 環境変数の読み込み
 	viper.AutomaticEnv()
 
@@ -43,7 +41,7 @@ func GetConfig() error {
 		}
 	}
 
-	// Config型の変数に設定を移す
+	// 設定格納用変数に設定を移す
 	err := viper.Unmarshal(&C)
 	if err != nil {
 		return fmt.Errorf("Error: failed to unmarshal config - %s ", err)
