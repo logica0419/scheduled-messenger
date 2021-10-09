@@ -5,6 +5,7 @@ import (
 
 	"github.com/logica0419/scheduled-messenger-bot/config"
 	"github.com/logica0419/scheduled-messenger-bot/router"
+	"github.com/logica0419/scheduled-messenger-bot/service/api"
 )
 
 func main() {
@@ -13,6 +14,8 @@ func main() {
 	if err := config.GetConfig(); err != nil {
 		log.Panic(err)
 	}
+
+	api.SetUpApi()
 
 	r := router.Setup()
 

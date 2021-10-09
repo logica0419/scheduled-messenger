@@ -1,9 +1,10 @@
 package api
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
-	"io"
+	"log"
 	"net/http"
 )
 
@@ -17,27 +18,31 @@ func SendMessage(chanID string, message string) error {
 	// URL を生成
 	url := fmt.Sprintf("%s/channels/%s/messages", baseUrl, chanID)
 
-	// ボディを作り、io.Pipe でリーダーと繋いで Goroutine 内でエンコード
+	// ボディを作り、バイト列に変換
 	body := Message{Content: message, Embed: false}
-	pr, pw := io.Pipe()
-	go func() {
-		_ = json.NewEncoder(pw).Encode(&body)
-		defer pw.Close()
-	}()
-
-	// io.Pipe で受け取ったボディを載せて POST リクエストを作成
-	req, err := http.NewRequest("POST", url, pr)
+	byteBody, err := json.Marshal(body)
 	if err != nil {
 		return err
 	}
 
-	// ヘッダーにトークンを設定
-	api.setTokenHeader(req)
-
-	// リクエストを送信
-	_, err = api.client.Do(req)
+	// 変換したボディを載せて POST リクエストを作成
+	req, err := http.NewRequest("POST", url, bytes.NewReader(byteBody))
 	if err != nil {
 		return err
+	}
+
+	// ヘッダーを設定
+	api.setTokenHeader(req)
+	api.setJsonHeader(req)
+
+	// リクエストを送信
+	res, err := api.client.Do(req)
+	log.Println(*res)
+	if err != nil {
+		return err
+	}
+	if res.StatusCode >= 300 {
+		return fmt.Errorf(res.Status)
 	}
 
 	return nil

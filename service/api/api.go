@@ -8,7 +8,7 @@ import (
 )
 
 // 共通 API ベース URL
-const baseUrl = "https://q.trap.jp/api/v3/"
+const baseUrl = "https://q.trap.jp/api/v3"
 
 // API クライアント構造体
 type API struct {
@@ -19,7 +19,7 @@ type API struct {
 // 共通 API クライアント
 var api *API
 
-func init() {
+func SetUpApi() {
 	client := new(http.Client)
 	api = &API{client: client, config: config.C}
 }
@@ -27,4 +27,9 @@ func init() {
 // リクエストのヘッダにトークンを付与
 func (api *API) setTokenHeader(req *http.Request) {
 	req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", api.config.Bot_Access_Token))
+}
+
+// リクエストのヘッダに JSON の Content-Type を付与
+func (api *API) setJsonHeader(req *http.Request) {
+	req.Header.Set("Content-Type", "application/json; charset=UTF-8")
 }
