@@ -1,7 +1,7 @@
-package model
+package event
 
 // JOINED, LEFT イベントリクエストスキーマ
-type RoomReq struct {
+type SystemEvent struct {
 	EventTime string  `json:"eventTime,omitempty"`
 	Channel   Channel `json:"channel,omitempty"`
 }
@@ -27,11 +27,11 @@ type Creator struct {
 }
 
 // チャンネルID 取得メソッド
-func (r *RoomReq) GetChannelID() string {
+func (r *SystemEvent) GetChannelID() string {
 	return r.Channel.ID
 }
 
 // チャンネルパス 取得メソッド
-func (r *RoomReq) GetChannelPath() string {
+func (r *SystemEvent) GetChannelPath() string {
 	return r.Channel.Path
 }
