@@ -10,8 +10,8 @@ import (
 )
 
 const (
-	pingEvent = "PING" // PING イベント
-	joinEvent = "JOIN" // JOIN イベント
+	pingEvent = "PING"   // PING イベント
+	joinEvent = "JOINED" // JOIN イベント
 )
 
 // Botのハンドラ (ヘッダーの "X-TRAQ-BOT-EVENT" を見てイベントごとにハンドラを割り振る)
