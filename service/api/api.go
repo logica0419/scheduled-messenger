@@ -26,5 +26,5 @@ func init() {
 
 // リクエストのヘッダにトークンを付与
 func (api *API) setTokenHeader(req *http.Request) {
-	req.Header.Add("Authorization", fmt.Sprintf("Bearer %s", api.config.Bot_Access_Token))
+	req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", api.config.Bot_Access_Token))
 }
