@@ -1,6 +1,7 @@
 package router
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/labstack/echo/v4"
@@ -41,7 +42,7 @@ func joinHandler(c echo.Context) error {
 	req := &model.RoomReq{}
 	err := c.Bind(&req)
 	if err != nil {
-		return c.JSON(http.StatusInternalServerError, errorMessage{Message: "failed to get request body"})
+		return c.JSON(http.StatusInternalServerError, errorMessage{Message: fmt.Sprintf("failed to get request body: %s", err)})
 	}
 
 	// メッセージの生成
@@ -52,7 +53,7 @@ func joinHandler(c echo.Context) error {
 	chanID := req.GetChannelID()
 	err = api.SendMessage(chanID, mes)
 	if err != nil {
-		return c.JSON(http.StatusInternalServerError, errorMessage{Message: "failed to send join message"})
+		return c.JSON(http.StatusInternalServerError, errorMessage{Message: fmt.Sprintf("failed to send join message: %s", err)})
 	}
 
 	return c.NoContent(http.StatusNoContent)
