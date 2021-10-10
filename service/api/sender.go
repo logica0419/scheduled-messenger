@@ -32,8 +32,8 @@ func SendMessage(chanID string, message string) error {
 	}
 
 	// ヘッダーを設定
-	api.setTokenHeader(req)
-	api.setJsonHeader(req)
+	setTokenHeader(req)
+	setJsonHeader(req)
 
 	// リクエストを送信
 	res, err := api.client.Do(req)

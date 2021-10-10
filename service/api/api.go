@@ -25,11 +25,11 @@ func SetUpApi() {
 }
 
 // リクエストのヘッダにトークンを付与
-func (api *API) setTokenHeader(req *http.Request) {
+func setTokenHeader(req *http.Request) {
 	req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", api.config.Bot_Access_Token))
 }
 
 // リクエストのヘッダに JSON の Content-Type を付与
-func (api *API) setJsonHeader(req *http.Request) {
+func setJsonHeader(req *http.Request) {
 	req.Header.Set("Content-Type", "application/json; charset=UTF-8")
 }
