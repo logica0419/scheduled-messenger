@@ -17,10 +17,8 @@ type Config struct {
 	Bot_Access_Token string `json:"bot_access_token,omitempty"`
 }
 
-var C *Config // 設定格納用変数
-
 // 設定を読み込み
-func GetConfig() error {
+func GetConfig() (*Config, error) {
 	// デフォルト値の設定
 	viper.SetDefault("Dev_Mode", false)
 	viper.SetDefault("Verification_Token", "")
@@ -37,15 +35,17 @@ func GetConfig() error {
 		if _, ok := err.(viper.ConfigFileNotFoundError); ok {
 			log.Print("Unable to find .env file, default settings or environmental variables are to be used.")
 		} else {
-			return fmt.Errorf("Error: failed to load .env file - %s ", err)
+			return nil, fmt.Errorf("Error: failed to load .env file - %s ", err)
 		}
 	}
+
+	var C *Config // 設定格納用変数
 
 	// 設定格納用変数に設定を移す
 	err := viper.Unmarshal(&C)
 	if err != nil {
-		return fmt.Errorf("Error: failed to unmarshal config - %s ", err)
+		return nil, fmt.Errorf("Error: failed to unmarshal config - %s ", err)
 	}
 
-	return nil
+	return C, nil
 }

@@ -14,7 +14,7 @@ type Message struct {
 }
 
 // 指定されたチャンネルに指定されたメッセージを投稿
-func SendMessage(chanID string, message string) error {
+func (api *API) SendMessage(chanID string, message string) error {
 	// URL を生成
 	url := fmt.Sprintf("%s/channels/%s/messages", baseUrl, chanID)
 
@@ -32,7 +32,7 @@ func SendMessage(chanID string, message string) error {
 	}
 
 	// ヘッダーを設定
-	setTokenHeader(req)
+	setTokenHeader(req, api)
 	setJsonHeader(req)
 
 	// リクエストを送信

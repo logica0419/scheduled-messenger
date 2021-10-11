@@ -8,7 +8,7 @@ import (
 )
 
 // 正常なリクエストかどうかの確認
-func requestVerification(next echo.HandlerFunc) echo.HandlerFunc {
+func (r *Router) requestVerification(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		// ヘッダーを取得
 		h := c.Request().Header

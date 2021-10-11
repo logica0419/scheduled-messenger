@@ -17,13 +17,13 @@ const (
 )
 
 // Botのハンドラ (ヘッダーの "X-TRAQ-BOT-EVENT" を見てイベントごとにハンドラを割り振る)
-func botEventHandler(c echo.Context) error {
+func (r *Router) botEventHandler(c echo.Context) error {
 	err := func() error {
 		switch c.Request().Header.Get(botEventHeader) {
 		case pingEvent:
 			return pingHandler(c)
 		case joinedEvent, leftEvent:
-			return systemHandler(c)
+			return systemHandler(c, r.Api)
 		default: // 未実装のイベント
 			return c.JSON(http.StatusNotImplemented, errorMessage{Message: "not implemented"})
 		}
@@ -38,7 +38,7 @@ func pingHandler(c echo.Context) error {
 }
 
 // JOINED / LEFT システムイベントハンドラ
-func systemHandler(c echo.Context) error {
+func systemHandler(c echo.Context, api *api.API) error {
 	// リクエストボディの取得
 	req := &event.SystemEvent{}
 	err := c.Bind(&req)

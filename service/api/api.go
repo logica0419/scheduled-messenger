@@ -16,16 +16,16 @@ type API struct {
 	config *config.Config
 }
 
-// 共通 API クライアント
-var api *API
-
-func SetUpApi() {
+// API クライアントの取得
+func GetApi(c *config.Config) *API {
 	client := new(http.Client)
-	api = &API{client: client, config: config.C}
+	api := &API{client: client, config: c}
+
+	return api
 }
 
 // リクエストのヘッダにトークンを付与
-func setTokenHeader(req *http.Request) {
+func setTokenHeader(req *http.Request, api *API) {
 	req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", api.config.Bot_Access_Token))
 }
 

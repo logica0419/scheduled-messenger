@@ -11,13 +11,14 @@ import (
 func main() {
 	log.Print("Initializing Scheduled Messenger Bot...")
 
-	if err := config.GetConfig(); err != nil {
+	c, err := config.GetConfig()
+	if err != nil {
 		log.Panic(err)
 	}
 
-	api.SetUpApi()
+	api := api.GetApi(c)
 
-	r := router.Setup()
+	r := router.SetUpRouter(c, api)
 
 	r.Start()
 }
