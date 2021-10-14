@@ -15,35 +15,41 @@ type Message struct {
 
 // 指定されたチャンネルに指定されたメッセージを投稿
 func (api *API) SendMessage(chanID string, message string) error {
-	// URL を生成
-	url := fmt.Sprintf("%s/channels/%s/messages", baseUrl, chanID)
+	// 開発モードではコンソールにメッセージを表示するのみ
+	if api.config.Dev_Mode {
+		log.Printf("Sending %s to %s", message, chanID)
+		return nil
+	} else {
+		// URL を生成
+		url := fmt.Sprintf("%s/channels/%s/messages", baseUrl, chanID)
 
-	// ボディを作り、バイト列に変換
-	body := Message{Content: message, Embed: false}
-	byteBody, err := json.Marshal(body)
-	if err != nil {
-		return err
+		// ボディを作り、バイト列に変換
+		body := Message{Content: message, Embed: false}
+		byteBody, err := json.Marshal(body)
+		if err != nil {
+			return err
+		}
+
+		// 変換したボディを載せて POST リクエストを作成
+		req, err := http.NewRequest("POST", url, bytes.NewReader(byteBody))
+		if err != nil {
+			return err
+		}
+
+		// ヘッダーを設定
+		setTokenHeader(req, api)
+		setJsonHeader(req)
+
+		// リクエストを送信
+		res, err := api.client.Do(req)
+		log.Println(*res)
+		if err != nil {
+			return err
+		}
+		if res.StatusCode >= 300 {
+			return fmt.Errorf(res.Status)
+		}
+
+		return nil
 	}
-
-	// 変換したボディを載せて POST リクエストを作成
-	req, err := http.NewRequest("POST", url, bytes.NewReader(byteBody))
-	if err != nil {
-		return err
-	}
-
-	// ヘッダーを設定
-	setTokenHeader(req, api)
-	setJsonHeader(req)
-
-	// リクエストを送信
-	res, err := api.client.Do(req)
-	log.Println(*res)
-	if err != nil {
-		return err
-	}
-	if res.StatusCode >= 300 {
-		return fmt.Errorf(res.Status)
-	}
-
-	return nil
 }
