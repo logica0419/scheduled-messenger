@@ -2,7 +2,6 @@ package service
 
 import (
 	"fmt"
-	"log"
 	"time"
 
 	"github.com/akamensky/argparse"
@@ -10,18 +9,17 @@ import (
 )
 
 // プレーンテキストのメッセージを配列に分解
-func ArgvParse(message string) []string {
+func ArgvParse(message string) ([]string, error) {
 	// パース用関数
 	var identity = func(s string) (string, error) { return s, nil }
 
 	// パース
 	parsed, err := argv.Argv(message, identity, identity)
 	if err != nil || len(parsed) == 0 {
-		log.Printf("an error occurred while parsing user command: %s\n", err)
-		return nil
+		return nil, err
 	}
 
-	return parsed[0]
+	return parsed[0], nil
 }
 
 // メッセージから要素を抽出する
@@ -37,19 +35,18 @@ func ParseScheduleMessage(message []string) (time.Time, string, string, error) {
 	// パース
 	err := parser.Parse(message)
 	if err != nil {
-		return time.Now(), "", "", err
+		return time.Now(), "", "", fmt.Errorf("```plaintext\n%s```", parser.Usage(err))
 	}
-	log.Print("```plaintext\n" + parser.Usage(err) + "```")
 
 	// 時間をパース
 	parsedTime, err := timeParse(*postTime)
 	if err != nil {
-		return time.Now(), "", "", err
+		return time.Now(), "", "", fmt.Errorf("```plaintext\n%s```", parser.Usage(err))
 	}
 
 	// 指定された時間が現在時刻より後か確認する
 	if time.Now().After(parsedTime) {
-		return time.Now(), "", "", fmt.Errorf("Error: invalid time: %s", parsedTime)
+		return time.Now(), "", "", fmt.Errorf("```plaintext\n%s```", parser.Usage("Error: invalid time - Specify the time later than now."))
 	}
 
 	return parsedTime, *channel, *body, nil
