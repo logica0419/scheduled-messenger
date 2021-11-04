@@ -8,8 +8,6 @@ import (
 	"github.com/cosiner/argv"
 )
 
-var Commands = []string{"!schedule"}
-
 // プレーンテキストのメッセージを配列に分解
 func ArgvParse(message string) ([]string, error) {
 	// パース用関数

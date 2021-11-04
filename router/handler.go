@@ -91,18 +91,33 @@ func messageEventHandler(c echo.Context, api *api.API) error {
 				listedReqMes = listedReqMes[1:]
 			}
 
-			// メッセージをパース
-			parsedTime, distChannel, body, err := service.ParseScheduleMessage(listedReqMes)
-			if err != nil {
-				_ = api.SendMessage(req.GetChannelID(), err.Error())
-				return c.JSON(http.StatusBadRequest, errorMessage{Message: fmt.Sprintf("failed to parse schedule message: %s", err)})
-			}
+			switch cmd {
+			case service.Commands["schedule"]:
+				// メッセージをパース
+				parsedTime, distChannel, body, err := service.ParseScheduleMessage(listedReqMes)
+				if err != nil {
+					_ = api.SendMessage(req.GetChannelID(), err.Error())
+					return c.JSON(http.StatusBadRequest, errorMessage{Message: fmt.Sprintf("failed to parse schedule message: %s", err)})
+				}
 
-			// 確認メッセージを送信
-			mes := service.CreateScheduleCreatedMessage(parsedTime, distChannel, body)
-			err = api.SendMessage(req.GetChannelID(), mes)
-			if err != nil {
-				return c.JSON(http.StatusInternalServerError, errorMessage{Message: fmt.Sprintf("failed to send message: %s", err)})
+				// 確認メッセージを送信
+				mes := service.CreateScheduleCreatedMessage(parsedTime, distChannel, body)
+				err = api.SendMessage(req.GetChannelID(), mes)
+				if err != nil {
+					return c.JSON(http.StatusInternalServerError, errorMessage{Message: fmt.Sprintf("failed to send message: %s", err)})
+				}
+			case service.Commands["join"]:
+				// チャンネルに JOIN する
+				err = api.ChannelAction(req.GetChannelID(), "join")
+				if err != nil {
+					return c.JSON(http.StatusInternalServerError, errorMessage{Message: fmt.Sprintf("failed to join the channel: %s", err)})
+				}
+			case service.Commands["leave"]:
+				// チャンネルから LEAVE する
+				err = api.ChannelAction(req.GetChannelID(), "leave")
+				if err != nil {
+					return c.JSON(http.StatusInternalServerError, errorMessage{Message: fmt.Sprintf("failed to leave the channel: %s", err)})
+				}
 			}
 		}
 	}

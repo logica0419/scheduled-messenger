@@ -11,6 +11,8 @@ import (
 type Config struct {
 	// DevMode 開発モードかどうか (default: false)
 	Dev_Mode bool `json:"dev_mode,omitempty"`
+	// Bot_ID ボットのID (default: "")
+	Bot_ID string `json:"bot_id,omitempty"`
 	// Verification_Token Botへのリクエストの認証トークン (default: "")
 	Verification_Token string `json:"verification_token,omitempty"`
 	// Bot_Access_Token Botからのアクセストークン (default: "")
@@ -21,6 +23,7 @@ type Config struct {
 func GetConfig() (*Config, error) {
 	// デフォルト値の設定
 	viper.SetDefault("Dev_Mode", false)
+	viper.SetDefault("Bot_ID", "")
 	viper.SetDefault("Verification_Token", "")
 	viper.SetDefault("Bot_Access_Token", "")
 
