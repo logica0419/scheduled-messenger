@@ -77,11 +77,6 @@ func messageEventHandler(c echo.Context, api *api.API) error {
 		return c.JSON(http.StatusInternalServerError, errorMessage{Message: fmt.Sprintf("failed to get request body: %s", err)})
 	}
 
-	// Botからのリクエストは無視
-	if req.Message.User.Bot {
-		return c.JSON(http.StatusForbidden, errorMessage{Message: "message from bot"})
-	}
-
 	// コマンドが含まれているか確認
 	for _, cmd := range service.Commands {
 		if strings.Contains(req.GetText(), cmd) {
