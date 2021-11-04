@@ -28,7 +28,7 @@ func ParseScheduleMessage(message []string) (time.Time, string, string, error) {
 	parser := argparse.NewParser("schedule", "メッセージを予約する")
 
 	// argumentを定義
-	channel := parser.String("c", "channel", &argparse.Options{Required: true, Help: "メッセージを送るチャンネル `#`からフルパスを記述してください"})
+	channel := parser.String("c", "channel", &argparse.Options{Default: "", Help: "メッセージを送るチャンネル `#`からフルパスを記述してください 省略した場合は予約メッセージを送信したチャンネルに送ります"})
 	postTime := parser.String("t", "time", &argparse.Options{Required: true, Help: "メッセージを送る時間 フォーマット:`yyyy/mm/dd/hh:mm`"})
 	body := parser.String("b", "body", &argparse.Options{Required: true, Help: "送るメッセージ スペースが入るときは\"\"や''でくくって下さい 改行はスペースとして扱われます"})
 

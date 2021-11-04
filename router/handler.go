@@ -100,6 +100,11 @@ func messageEventHandler(c echo.Context, api *api.API) error {
 					return c.JSON(http.StatusBadRequest, errorMessage{Message: fmt.Sprintf("failed to parse schedule message: %s", err)})
 				}
 
+				// 送信先チャンネルが空の場合、予約メッセージが投稿されたチャンネルを設定
+				if distChannel == "" {
+					distChannel = req.GetChannelID()
+				}
+
 				// 確認メッセージを送信
 				mes := service.CreateScheduleCreatedMessage(parsedTime, distChannel, body)
 				err = api.SendMessage(req.GetChannelID(), mes)
