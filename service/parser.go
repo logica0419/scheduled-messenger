@@ -27,12 +27,12 @@ func ArgvParse(message string) ([]string, error) {
 // メッセージから要素を抽出する
 func ParseScheduleMessage(message []string) (time.Time, string, string, error) {
 	// パーサーを定義
-	parser := argparse.NewParser("schedule", "Create scheduled message")
+	parser := argparse.NewParser("schedule", "メッセージを予約する")
 
 	// argumentを定義
 	channel := parser.String("c", "channel", &argparse.Options{Required: true, Help: "メッセージを送るチャンネル `#`からフルパスを記述してください"})
 	postTime := parser.String("t", "time", &argparse.Options{Required: true, Help: "メッセージを送る時間 フォーマット:`yyyy/mm/dd/hh:mm`"})
-	body := parser.String("b", "body", &argparse.Options{Required: true, Help: "送るメッセージ スペースや改行が入るときは\"\"や''でくくって下さい"})
+	body := parser.String("b", "body", &argparse.Options{Required: true, Help: "送るメッセージ スペースが入るときは\"\"や''でくくって下さい 改行はスペースとして扱われます"})
 
 	// パース
 	err := parser.Parse(message)
