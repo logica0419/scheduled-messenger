@@ -8,6 +8,8 @@ import (
 	"github.com/cosiner/argv"
 )
 
+var Commands = []string{"!schedule"}
+
 // プレーンテキストのメッセージを配列に分解
 func ArgvParse(message string) ([]string, error) {
 	// パース用関数
@@ -28,25 +30,25 @@ func ParseScheduleMessage(message []string) (time.Time, string, string, error) {
 	parser := argparse.NewParser("schedule", "Create scheduled message")
 
 	// argumentを定義
-	channel := parser.String("c", "channel", &argparse.Options{Required: true, Help: "Channel to send message to, beginning with`#`"})
-	postTime := parser.String("t", "time", &argparse.Options{Required: true, Help: "Time to send message at, format:`yy/mm/dd/hh:mm`"})
-	body := parser.String("b", "body", &argparse.Options{Required: true, Help: "Message to send"})
+	channel := parser.String("c", "channel", &argparse.Options{Required: true, Help: "メッセージを送るチャンネル `#`からフルパスを記述してください"})
+	postTime := parser.String("t", "time", &argparse.Options{Required: true, Help: "メッセージを送る時間 フォーマット:`yyyy/mm/dd/hh:mm`"})
+	body := parser.String("b", "body", &argparse.Options{Required: true, Help: "送るメッセージ スペースや改行が入るときは\"\"や''でくくって下さい"})
 
 	// パース
 	err := parser.Parse(message)
 	if err != nil {
-		return time.Now(), "", "", fmt.Errorf("```plaintext\n%s```", parser.Usage(err))
+		return time.Now(), "", "", fmt.Errorf("メッセージの予約に失敗しました\n```plaintext\n%s```", parser.Usage(err))
 	}
 
 	// 時間をパース
 	parsedTime, err := timeParse(*postTime)
 	if err != nil {
-		return time.Now(), "", "", fmt.Errorf("```plaintext\n%s```", parser.Usage(err))
+		return time.Now(), "", "", fmt.Errorf("メッセージの予約に失敗しました\n```plaintext\n%s```", parser.Usage(err))
 	}
 
 	// 指定された時間が現在時刻より後か確認する
 	if time.Now().After(parsedTime) {
-		return time.Now(), "", "", fmt.Errorf("```plaintext\n%s```", parser.Usage("Error: invalid time - Specify the time later than now."))
+		return time.Now(), "", "", fmt.Errorf("メッセージの予約に失敗しました\n```plaintext\n%s```", parser.Usage("Error: invalid time - Specify the time later than now."))
 	}
 
 	return parsedTime, *channel, *body, nil
