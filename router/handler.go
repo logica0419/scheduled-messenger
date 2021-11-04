@@ -108,13 +108,13 @@ func messageEventHandler(c echo.Context, api *api.API) error {
 				}
 			case service.Commands["join"]:
 				// チャンネルに JOIN する
-				err = api.ChannelAction(req.GetChannelID(), "join")
+				err = api.ChannelAction("join", req.GetChannelID())
 				if err != nil {
 					return c.JSON(http.StatusInternalServerError, errorMessage{Message: fmt.Sprintf("failed to join the channel: %s", err)})
 				}
 			case service.Commands["leave"]:
 				// チャンネルから LEAVE する
-				err = api.ChannelAction(req.GetChannelID(), "leave")
+				err = api.ChannelAction("leave", req.GetChannelID())
 				if err != nil {
 					return c.JSON(http.StatusInternalServerError, errorMessage{Message: fmt.Sprintf("failed to leave the channel: %s", err)})
 				}
