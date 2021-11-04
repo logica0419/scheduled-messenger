@@ -17,5 +17,5 @@ func CreateLeftMessage() string {
 
 // スケジュール作成時のメッセージを生成
 func CreateScheduleCreatedMessage(parsedTime time.Time, distChannel string, body string) string {
-	return fmt.Sprintf("`%s`に`%s`、以下の内容を投稿します。\n```plaintext\n%s````", distChannel, parsedTime.Format("2006年01月02日 15:04"), body)
+	return fmt.Sprintf("`%s`に`%s`、以下の内容を投稿します。\n```plaintext\n%s\n```", distChannel, parsedTime.Format("2006年01月02日 15:04"), body)
 }
