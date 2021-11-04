@@ -48,7 +48,7 @@ func ParseScheduleMessage(message []string) (time.Time, string, string, error) {
 
 	// 指定された時間が現在時刻より後か確認する
 	if time.Now().After(parsedTime) {
-		return time.Now(), "", "", fmt.Errorf("メッセージの予約に失敗しました\n```plaintext\n%s```", parser.Usage("Error: invalid time - Specify the time later than now."))
+		return time.Now(), "", "", fmt.Errorf("メッセージの予約に失敗しました\n```plaintext\n%s```", parser.Usage("現在時刻より後の時間を指定してください"))
 	}
 
 	return parsedTime, *channel, *body, nil
