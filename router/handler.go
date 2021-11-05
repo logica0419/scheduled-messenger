@@ -2,12 +2,12 @@ package router
 
 import (
 	"fmt"
-	"log"
 	"net/http"
 	"strings"
 
 	"github.com/labstack/echo/v4"
 	"github.com/logica0419/scheduled-messenger-bot/model/event"
+	"github.com/logica0419/scheduled-messenger-bot/repository"
 	"github.com/logica0419/scheduled-messenger-bot/service"
 	"github.com/logica0419/scheduled-messenger-bot/service/api"
 )
@@ -29,7 +29,7 @@ func (r *Router) botEventHandler(c echo.Context) error {
 		case joinedEvent, leftEvent:
 			return systemHandler(c, r.Api)
 		case messageCreatedEvent, directMessageCreatedEvent:
-			return messageEventHandler(c, r.Api)
+			return messageEventHandler(c, r.Api, r.Repo)
 		default: // 未実装のイベント
 			return c.JSON(http.StatusNotImplemented, errorMessage{Message: "not implemented"})
 		}
@@ -70,7 +70,7 @@ func systemHandler(c echo.Context, api *api.API) error {
 	return c.NoContent(http.StatusNoContent)
 }
 
-func messageEventHandler(c echo.Context, api *api.API) error {
+func messageEventHandler(c echo.Context, api *api.API, repo repository.Repository) error {
 	// リクエストボディの取得
 	req := &event.MessageEvent{}
 	err := c.Bind(&req)
@@ -89,10 +89,14 @@ func messageEventHandler(c echo.Context, api *api.API) error {
 					return c.JSON(http.StatusBadRequest, errorMessage{Message: err.Error()})
 				}
 
-				log.Print(distChannelID)
+				// スケジュールを DB に登録
+				schMes, err := service.ResisterSchMes(repo, req.GetUserID(), parsedTime, distChannelID, body)
+				if err != nil {
+					return c.JSON(http.StatusInternalServerError, errorMessage{Message: err.Error()})
+				}
 
 				// 確認メッセージを送信
-				mes := service.CreateScheduleCreatedMessage(parsedTime, distChannel, body)
+				mes := service.CreateScheduleCreatedMessage(schMes.Time, distChannel, schMes.Body, schMes.ID)
 				err = api.SendMessage(req.GetChannelID(), mes)
 				if err != nil {
 					return c.JSON(http.StatusInternalServerError, errorMessage{Message: fmt.Sprintf("failed to send message: %s", err)})

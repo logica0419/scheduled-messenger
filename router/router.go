@@ -5,6 +5,7 @@ import (
 	"github.com/labstack/echo/v4/middleware"
 	"github.com/labstack/gommon/log"
 	"github.com/logica0419/scheduled-messenger-bot/config"
+	"github.com/logica0419/scheduled-messenger-bot/repository"
 	"github.com/logica0419/scheduled-messenger-bot/service/api"
 )
 
@@ -19,6 +20,7 @@ type Router struct {
 	e      *echo.Echo
 	Config *config.Config
 	Api    *api.API
+	Repo   repository.Repository
 }
 
 type errorMessage struct {
@@ -26,8 +28,8 @@ type errorMessage struct {
 }
 
 // ルーターのセットアップと取得
-func SetUpRouter(c *config.Config, api *api.API) *Router {
-	r := newRouter(c, api)
+func SetUpRouter(c *config.Config, api *api.API, repo repository.Repository) *Router {
+	r := newRouter(c, api, repo)
 
 	r.e.POST("/", r.botEventHandler, r.requestVerification)
 
@@ -46,10 +48,10 @@ func newEcho() *echo.Echo {
 }
 
 // 新しいルーターを取得
-func newRouter(c *config.Config, api *api.API) *Router {
+func newRouter(c *config.Config, api *api.API, repo repository.Repository) *Router {
 	e := newEcho()
 
-	r := Router{e: e, Config: c, Api: api}
+	r := Router{e: e, Config: c, Api: api, Repo: repo}
 
 	return &r
 }

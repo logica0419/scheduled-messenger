@@ -45,3 +45,8 @@ func (r *MessageEvent) GetText() string {
 func (r *MessageEvent) GetChannelID() string {
 	return r.Message.ChannelID
 }
+
+// ユーザーID 取得メソッド
+func (r *MessageEvent) GetUserID() string {
+	return r.Message.User.ID
+}

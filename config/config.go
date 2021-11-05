@@ -17,6 +17,14 @@ type Config struct {
 	Verification_Token string `json:"verification_token,omitempty"`
 	// Bot_Access_Token Botからのアクセストークン (default: "")
 	Bot_Access_Token string `json:"bot_access_token,omitempty"`
+	// DB のホスト (default: "mariadb")
+	MariaDB_Hostname string `json:"mariadb_hostname,omitempty"`
+	// DB の DB 名 (default: "SchMes")
+	MariaDB_Database string `json:"mariadb_database,omitempty"`
+	// DB のユーザー名 (default: "root")
+	MariaDB_Username string `json:"mariadb_username,omitempty"`
+	// DB のパスワード (default: "password")
+	MariaDB_Password string `json:"mariadb_password,omitempty"`
 }
 
 // 設定を読み込み
@@ -26,6 +34,10 @@ func GetConfig() (*Config, error) {
 	viper.SetDefault("Bot_ID", "")
 	viper.SetDefault("Verification_Token", "")
 	viper.SetDefault("Bot_Access_Token", "")
+	viper.SetDefault("MariaDB_Hostname", "mariadb")
+	viper.SetDefault("MariaDB_Database", "SchMes")
+	viper.SetDefault("MariaDB_Username", "root")
+	viper.SetDefault("MariaDB_Password", "password")
 
 	// 環境変数の読み込み
 	viper.AutomaticEnv()

@@ -6,10 +6,11 @@ import (
 	"github.com/google/uuid"
 )
 
-type ScheduledMes struct {
-	Id      uuid.UUID
-	User    string
-	Time    time.Time
-	Channel string
-	Body    string
+// スケジュールドメッセージのモデル定義
+type SchMes struct {
+	ID        uuid.UUID `gorm:"primaryKey"`
+	UserID    string
+	Time      time.Time `gorm:"index"`
+	ChannelID uuid.UUID
+	Body      string
 }
