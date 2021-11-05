@@ -35,7 +35,7 @@ func ScheduleCommandParse(api *api.API, req *event.MessageEvent) (time.Time, str
 	}
 
 	// distChannel のIDを取得
-	var distChannelID string
+	distChannelID := ""
 	for _, v := range req.Message.Embedded {
 		if v.Raw == distChannel && v.Type == "channel" {
 			distChannelID = v.ID

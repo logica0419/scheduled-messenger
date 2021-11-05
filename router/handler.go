@@ -2,6 +2,7 @@ package router
 
 import (
 	"fmt"
+	"log"
 	"net/http"
 	"strings"
 
@@ -89,13 +90,12 @@ func messageEventHandler(c echo.Context, api *api.API) error {
 				}
 
 				// チャンネルが指定されてないとき、ID と名前を取得
-				if distChannel == "" || distChannelID == "" {
+				if distChannel == "" {
 					distChannelID = req.GetChannelID()
-					distChannel, err = api.GetChannelNameByID(distChannelID)
-					if err != nil {
-						return c.JSON(http.StatusInternalServerError, errorMessage{Message: err.Error()})
-					}
+					distChannel = "このチャンネル"
 				}
+
+				log.Print(distChannelID)
 
 				// 確認メッセージを送信
 				mes := service.CreateScheduleCreatedMessage(parsedTime, distChannel, body)
