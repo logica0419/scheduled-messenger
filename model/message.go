@@ -9,7 +9,7 @@ import (
 // スケジュールドメッセージのモデル定義
 type SchMes struct {
 	ID        uuid.UUID `gorm:"primaryKey"`
-	UserID    string
+	UserID    uuid.UUID
 	Time      time.Time `gorm:"index"`
 	ChannelID uuid.UUID
 	Body      string

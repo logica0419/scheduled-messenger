@@ -11,8 +11,9 @@ import (
 // 新たなメッセージを生成し、DB に登録
 func ResisterSchMes(repo repository.Repository, userID string, time time.Time, channelID string, body string) (*model.SchMes, error) {
 	channelUUID := uuid.MustParse(channelID)
+	userUUID := uuid.MustParse(userID)
 
-	schMes, err := generateSchMes(userID, time, channelUUID, body)
+	schMes, err := generateSchMes(userUUID, time, channelUUID, body)
 	if err != nil {
 		return nil, err
 	}
@@ -26,7 +27,7 @@ func ResisterSchMes(repo repository.Repository, userID string, time time.Time, c
 }
 
 // 新たな ScheduleMes 構造体型変数を生成
-func generateSchMes(userID string, time time.Time, channelID uuid.UUID, body string) (*model.SchMes, error) {
+func generateSchMes(userID uuid.UUID, time time.Time, channelID uuid.UUID, body string) (*model.SchMes, error) {
 	id, err := uuid.NewRandom()
 	if err != nil {
 		return nil, err
