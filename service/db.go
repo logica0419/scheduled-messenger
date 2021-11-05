@@ -11,8 +11,14 @@ import (
 
 // 新たなメッセージを生成し、DB に登録
 func ResisterSchMes(repo repository.Repository, userID string, time time.Time, channelID string, body string) (*model.SchMes, error) {
-	channelUUID := uuid.MustParse(channelID)
-	userUUID := uuid.MustParse(userID)
+	channelUUID, err := uuid.Parse(channelID)
+	if err != nil {
+		return nil, err
+	}
+	userUUID, err := uuid.Parse(userID)
+	if err != nil {
+		return nil, err
+	}
 
 	schMes, err := generateSchMes(userUUID, time, channelUUID, body)
 	if err != nil {
@@ -45,9 +51,12 @@ func generateSchMes(userID uuid.UUID, time time.Time, channelID uuid.UUID, body 
 
 // 指定された ID のメッセージを DB から削除
 func DeleteSchMes(repo repository.Repository, api *api.API, mesID string) error {
-	mesUUID := uuid.MustParse(mesID)
+	mesUUID, err := uuid.Parse(mesID)
+	if err != nil {
+		return err
+	}
 
-	err := repo.DeleteSchMesByID(mesUUID)
+	err = repo.DeleteSchMesByID(mesUUID)
 	if err != nil {
 		return err
 	}

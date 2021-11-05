@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/google/uuid"
 	"github.com/labstack/echo/v4"
 	"github.com/logica0419/scheduled-messenger-bot/model/event"
 	"github.com/logica0419/scheduled-messenger-bot/repository"
@@ -55,8 +56,9 @@ func deleteHandler(c echo.Context, api *api.API, repo repository.Repository, req
 	// スケジュールを DB から削除
 	err = service.DeleteSchMes(repo, api, id)
 	if err != nil {
-		if errors.Is(err, gorm.ErrRecordNotFound) {
+		if uuid.IsInvalidLengthError(err) || errors.Is(err, gorm.ErrRecordNotFound) {
 			_ = api.SendMessage(req.GetChannelID(), "メッセージの削除に失敗しました\n```plaintext\n存在しないIDです\n```")
+			return c.JSON(http.StatusBadRequest, errorMessage{Message: err.Error()})
 		}
 		return c.JSON(http.StatusInternalServerError, errorMessage{Message: err.Error()})
 	}
