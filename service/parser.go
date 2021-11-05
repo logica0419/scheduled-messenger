@@ -9,7 +9,7 @@ import (
 )
 
 // プレーンテキストのメッセージを配列に分解
-func ArgvParse(message string) ([]string, error) {
+func argvParse(message string) ([]string, error) {
 	// パース用関数
 	var identity = func(s string) (string, error) { return s, nil }
 
@@ -22,8 +22,8 @@ func ArgvParse(message string) ([]string, error) {
 	return parsed[0], nil
 }
 
-// メッセージから要素を抽出する
-func ParseScheduleMessage(message []string) (time.Time, string, string, error) {
+// 予約作成コマンドから要素を抽出
+func argparseScheduleCommand(message []string) (time.Time, string, string, error) {
 	// パーサーを定義
 	parser := argparse.NewParser("schedule", "メッセージを予約する")
 

@@ -84,7 +84,7 @@ func messageEventHandler(c echo.Context, api *api.API) error {
 			switch cmd {
 			case service.Commands["schedule"]:
 				// メッセージをパース
-				parsedTime, distChannel, distChannelID, body, err := service.ScheduleCommandParse(api, req)
+				parsedTime, distChannel, distChannelID, body, err := service.ParseScheduleCommand(api, req)
 				if err != nil {
 					return c.JSON(http.StatusBadRequest, errorMessage{Message: err.Error()})
 				}

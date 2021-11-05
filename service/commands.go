@@ -15,9 +15,9 @@ var Commands = map[string]string{
 	"leave":    "!leave",
 }
 
-func ScheduleCommandParse(api *api.API, req *event.MessageEvent) (time.Time, string, string, string, error) {
+func ParseScheduleCommand(api *api.API, req *event.MessageEvent) (time.Time, string, string, string, error) {
 	// メッセージを配列に
-	listedReqMes, err := ArgvParse(req.GetText())
+	listedReqMes, err := argvParse(req.GetText())
 	if err != nil {
 		return time.Now(), "", "", "", fmt.Errorf("failed to parse argv: %s", err)
 	}
@@ -28,7 +28,7 @@ func ScheduleCommandParse(api *api.API, req *event.MessageEvent) (time.Time, str
 	}
 
 	// メッセージをパース
-	parsedTime, distChannel, body, err := ParseScheduleMessage(listedReqMes)
+	parsedTime, distChannel, body, err := argparseScheduleCommand(listedReqMes)
 	if err != nil {
 		_ = api.SendMessage(req.GetChannelID(), err.Error())
 		return time.Now(), "", "", "", fmt.Errorf("failed to parse argv: %s", err)
