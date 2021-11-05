@@ -78,41 +78,16 @@ func messageEventHandler(c echo.Context, api *api.API, repo repository.Repositor
 		return c.JSON(http.StatusInternalServerError, errorMessage{Message: fmt.Sprintf("failed to get request body: %s", err)})
 	}
 
-	// コマンドが含まれているか確認
+	// コマンドが含まれていた場合、コマンドハンドラーを呼び出す
 	for _, cmd := range service.Commands {
 		if strings.Contains(req.GetText(), cmd) {
 			switch cmd {
 			case service.Commands["schedule"]:
-				// メッセージをパースし、要素を取得
-				parsedTime, distChannel, distChannelID, body, err := service.ParseScheduleCommand(api, req)
-				if err != nil {
-					return c.JSON(http.StatusBadRequest, errorMessage{Message: err.Error()})
-				}
-
-				// スケジュールを DB に登録
-				schMes, err := service.ResisterSchMes(repo, req.GetUserID(), parsedTime, distChannelID, body)
-				if err != nil {
-					return c.JSON(http.StatusInternalServerError, errorMessage{Message: err.Error()})
-				}
-
-				// 確認メッセージを送信
-				mes := service.CreateScheduleCreatedMessage(schMes.Time, distChannel, schMes.Body, schMes.ID)
-				err = api.SendMessage(req.GetChannelID(), mes)
-				if err != nil {
-					return c.JSON(http.StatusInternalServerError, errorMessage{Message: fmt.Sprintf("failed to send message: %s", err)})
-				}
+				return scheduleHandler(c, api, repo, req)
 			case service.Commands["join"]:
-				// チャンネルに JOIN する
-				err = api.ChannelAction("join", req.GetChannelID())
-				if err != nil {
-					return c.JSON(http.StatusInternalServerError, errorMessage{Message: fmt.Sprintf("failed to join the channel: %s", err)})
-				}
+				return joinHandler(c, api, req)
 			case service.Commands["leave"]:
-				// チャンネルから LEAVE する
-				err = api.ChannelAction("leave", req.GetChannelID())
-				if err != nil {
-					return c.JSON(http.StatusInternalServerError, errorMessage{Message: fmt.Sprintf("failed to leave the channel: %s", err)})
-				}
+				return leaveHandler(c, api, req)
 			}
 		}
 	}
