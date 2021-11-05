@@ -41,7 +41,7 @@ func (r *MessageEvent) GetText() string {
 	return r.Message.PlainText
 }
 
-// チャンネルパス 取得メソッド
+// チャンネルID 取得メソッド
 func (r *MessageEvent) GetChannelID() string {
 	return r.Message.ChannelID
 }

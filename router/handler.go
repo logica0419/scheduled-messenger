@@ -80,29 +80,21 @@ func messageEventHandler(c echo.Context, api *api.API) error {
 	// コマンドが含まれているか確認
 	for _, cmd := range service.Commands {
 		if strings.Contains(req.GetText(), cmd) {
-			// メッセージを配列に
-			listedReqMes, err := service.ArgvParse(req.GetText())
-			if err != nil {
-				return c.JSON(http.StatusBadRequest, errorMessage{Message: fmt.Sprintf("failed to parse argv: %s", err)})
-			}
-
-			// 冒頭にメンションがついていた場合要素をドロップ
-			if strings.Contains(listedReqMes[0], "@") {
-				listedReqMes = listedReqMes[1:]
-			}
-
 			switch cmd {
 			case service.Commands["schedule"]:
 				// メッセージをパース
-				parsedTime, distChannel, body, err := service.ParseScheduleMessage(listedReqMes)
+				parsedTime, distChannel, distChannelID, body, err := service.ScheduleCommandParse(api, req)
 				if err != nil {
-					_ = api.SendMessage(req.GetChannelID(), err.Error())
-					return c.JSON(http.StatusBadRequest, errorMessage{Message: fmt.Sprintf("failed to parse schedule message: %s", err)})
+					return c.JSON(http.StatusBadRequest, errorMessage{Message: err.Error()})
 				}
 
-				// 送信先チャンネルが空の場合、予約メッセージが投稿されたチャンネルを設定
-				if distChannel == "" {
-					distChannel = req.GetChannelID()
+				// チャンネルが指定されてないとき、ID と名前を取得
+				if distChannel == "" || distChannelID == "" {
+					distChannelID = req.GetChannelID()
+					distChannel, err = api.GetChannelNameByID(distChannelID)
+					if err != nil {
+						return c.JSON(http.StatusInternalServerError, errorMessage{Message: err.Error()})
+					}
 				}
 
 				// 確認メッセージを送信
