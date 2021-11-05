@@ -1,0 +1,41 @@
+version: "3"
+
+services:
+  dev-env:
+    container_name: SchMes_dev-env
+    build:
+      context: .
+      dockerfile: Dockerfile
+    init: true
+    volumes:
+      - ..:/SchMes:cached
+    command: sleep infinity
+    ports:
+      - "8080:8080"
+    depends_on:
+      - mariadb
+
+  mariadb:
+    container_name: SchMes_mariadb
+    image: mariadb:latest
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: SchMes
+    volumes:
+      - db:/var/lib/mysql
+
+  phpmyadmin:
+    container_name: SchMes_phpmyadmin
+    image: phpmyadmin/phpmyadmin:latest
+    environment:
+      - PMA_ARBITRARY=1
+      - PMA_HOST=mariadb
+      - PMA_USER=root
+      - PMA_PASSWORD=password
+    ports:
+      - "8100:80"
+    depends_on:
+      - mariadb
+
+volumes:
+  db:
