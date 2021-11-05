@@ -79,14 +79,16 @@ func messageEventHandler(c echo.Context, api *api.API, repo repository.Repositor
 	}
 
 	// コマンドが含まれていた場合、コマンドハンドラーを呼び出す
-	for _, cmd := range service.Commands {
+	for _, cmd := range commands {
 		if strings.Contains(req.GetText(), cmd) {
 			switch cmd {
-			case service.Commands["schedule"]:
+			case commands["schedule"]:
 				return scheduleHandler(c, api, repo, req)
-			case service.Commands["join"]:
+			case commands["delete"]:
+				return deleteHandler(c, api, repo, req)
+			case commands["join"]:
 				return joinHandler(c, api, req)
-			case service.Commands["leave"]:
+			case commands["leave"]:
 				return leaveHandler(c, api, req)
 			}
 		}

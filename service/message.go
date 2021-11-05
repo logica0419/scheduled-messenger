@@ -27,3 +27,7 @@ func CreateScheduleCreatedMessage(parsedTime time.Time, distChannel string, body
 		id.String(),
 	)
 }
+
+func CreateScheduleDeletedMessage(id string) string {
+	return fmt.Sprintf("ID:`%s`のメッセージ送信予約を取り消しました。", id)
+}

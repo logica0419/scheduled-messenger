@@ -6,6 +6,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/logica0419/scheduled-messenger-bot/model"
 	"github.com/logica0419/scheduled-messenger-bot/repository"
+	"github.com/logica0419/scheduled-messenger-bot/service/api"
 )
 
 // 新たなメッセージを生成し、DB に登録
@@ -40,4 +41,16 @@ func generateSchMes(userID uuid.UUID, time time.Time, channelID uuid.UUID, body 
 		ChannelID: channelID,
 		Body:      body,
 	}, nil
+}
+
+// 指定された ID のメッセージを DB から削除
+func DeleteSchMes(repo repository.Repository, api *api.API, mesID string) error {
+	mesUUID := uuid.MustParse(mesID)
+
+	err := repo.DeleteSchMesByID(mesUUID)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
