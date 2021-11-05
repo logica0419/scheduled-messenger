@@ -34,12 +34,18 @@ func ParseScheduleCommand(api *api.API, req *event.MessageEvent) (time.Time, str
 		return time.Now(), "", "", "", fmt.Errorf("failed to parse argv: %s", err)
 	}
 
-	// distChannel のIDを取得
+	// チャンネルが指定されてないとき、ID と名前を取得
 	distChannelID := ""
-	for _, v := range req.Message.Embedded {
-		if v.Raw == distChannel && v.Type == "channel" {
-			distChannelID = v.ID
-			break
+	if distChannel == "" {
+		distChannel = "このチャンネル"
+		distChannelID = req.GetChannelID()
+	} else {
+		// 指定されている場合 distChannel のIDを embedded から取得
+		for _, v := range req.Message.Embedded {
+			if v.Raw == distChannel && v.Type == "channel" {
+				distChannelID = v.ID
+				break
+			}
 		}
 	}
 

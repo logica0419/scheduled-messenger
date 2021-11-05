@@ -83,16 +83,10 @@ func messageEventHandler(c echo.Context, api *api.API) error {
 		if strings.Contains(req.GetText(), cmd) {
 			switch cmd {
 			case service.Commands["schedule"]:
-				// メッセージをパース
+				// メッセージをパースし、要素を取得
 				parsedTime, distChannel, distChannelID, body, err := service.ParseScheduleCommand(api, req)
 				if err != nil {
 					return c.JSON(http.StatusBadRequest, errorMessage{Message: err.Error()})
-				}
-
-				// チャンネルが指定されてないとき、ID と名前を取得
-				if distChannel == "" {
-					distChannelID = req.GetChannelID()
-					distChannel = "このチャンネル"
 				}
 
 				log.Print(distChannelID)
