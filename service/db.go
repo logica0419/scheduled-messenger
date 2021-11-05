@@ -15,12 +15,8 @@ func ResisterSchMes(repo repository.Repository, userID string, time time.Time, c
 	if err != nil {
 		return nil, err
 	}
-	userUUID, err := uuid.Parse(userID)
-	if err != nil {
-		return nil, err
-	}
 
-	schMes, err := generateSchMes(userUUID, time, channelUUID, body)
+	schMes, err := generateSchMes(userID, time, channelUUID, body)
 	if err != nil {
 		return nil, err
 	}
@@ -34,7 +30,7 @@ func ResisterSchMes(repo repository.Repository, userID string, time time.Time, c
 }
 
 // 新たな ScheduleMes 構造体型変数を生成
-func generateSchMes(userID uuid.UUID, time time.Time, channelID uuid.UUID, body string) (*model.SchMes, error) {
+func generateSchMes(userID string, time time.Time, channelID uuid.UUID, body string) (*model.SchMes, error) {
 	id, err := uuid.NewRandom()
 	if err != nil {
 		return nil, err
@@ -66,12 +62,7 @@ func DeleteSchMes(repo repository.Repository, api *api.API, mesID string) error 
 
 // 指定された UserID のメッセージを DB から取得
 func GetSchMesByUserID(repo repository.Repository, userID string) ([]*model.SchMes, error) {
-	userUUID, err := uuid.Parse(userID)
-	if err != nil {
-		return nil, err
-	}
-
-	mesList, err := repo.GetSchMesByUserID(userUUID)
+	mesList, err := repo.GetSchMesByUserID(userID)
 	if err != nil {
 		return nil, err
 	}
