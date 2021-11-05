@@ -86,6 +86,8 @@ func messageEventHandler(c echo.Context, api *api.API, repo repository.Repositor
 				return scheduleHandler(c, api, repo, req)
 			case commands["delete"]:
 				return deleteHandler(c, api, repo, req)
+			case commands["list"]:
+				return listHandler(c, api, repo, req)
 			case commands["join"]:
 				return joinHandler(c, api, req)
 			case commands["leave"]:

@@ -7,6 +7,7 @@ import (
 
 type SchMesRepository interface {
 	GetSchMesByID(mesID uuid.UUID) (*model.SchMes, error)
+	GetSchMesByUserID(mesID uuid.UUID) ([]*model.SchMes, error)
 	ResisterSchMes(mes *model.SchMes) error
 	DeleteSchMesByID(mesID uuid.UUID) error
 }

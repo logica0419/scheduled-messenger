@@ -16,9 +16,10 @@ import (
 
 var commands = map[string]string{
 	"schedule": "!schedule",
+	"delete":   "!delete",
+	"list":     "!list",
 	"join":     "!join",
 	"leave":    "!leave",
-	"delete":   "!delete",
 }
 
 // schedule コマンドハンドラー
@@ -65,6 +66,27 @@ func deleteHandler(c echo.Context, api *api.API, repo repository.Repository, req
 
 	// 確認メッセージを送信
 	mes := service.CreateScheduleDeletedMessage(id)
+	err = api.SendMessage(req.GetChannelID(), mes)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, errorMessage{Message: fmt.Sprintf("failed to send message: %s", err)})
+	}
+
+	return c.NoContent(http.StatusNoContent)
+}
+
+// list コマンドハンドラー
+func listHandler(c echo.Context, api *api.API, repo repository.Repository, req *event.MessageEvent) error {
+	// ユーザー ID を取得
+	userID := req.GetUserID()
+
+	// スケジュールを DB から取得
+	mesList, err := service.GetSchMesByUserID(repo, userID)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, errorMessage{Message: err.Error()})
+	}
+
+	// 予約メッセージリストを送信
+	mes := service.CreateScheduleListMessage(mesList)
 	err = api.SendMessage(req.GetChannelID(), mes)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, errorMessage{Message: fmt.Sprintf("failed to send message: %s", err)})

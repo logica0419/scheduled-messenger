@@ -63,3 +63,18 @@ func DeleteSchMes(repo repository.Repository, api *api.API, mesID string) error 
 
 	return nil
 }
+
+// 指定された UserID のメッセージを DB から取得
+func GetSchMesByUserID(repo repository.Repository, userID string) ([]*model.SchMes, error) {
+	userUUID, err := uuid.Parse(userID)
+	if err != nil {
+		return nil, err
+	}
+
+	mesList, err := repo.GetSchMesByUserID(userUUID)
+	if err != nil {
+		return nil, err
+	}
+
+	return mesList, nil
+}

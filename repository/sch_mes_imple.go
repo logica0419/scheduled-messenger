@@ -19,6 +19,20 @@ func (repo *GormRepository) GetSchMesByID(mesID uuid.UUID) (*model.SchMes, error
 	return schMes, nil
 }
 
+// 指定された UserID のスケジュールドメッセージのレコードを全取得
+func (repo *GormRepository) GetSchMesByUserID(mesID uuid.UUID) ([]*model.SchMes, error) {
+	// 空のメッセージ構造体の変数を作成
+	var schMes []*model.SchMes
+
+	// レコードを取得
+	res := repo.getTx().Where("user_id = ?", mesID).Find(&schMes)
+	if res.Error != nil {
+		return nil, res.Error
+	}
+
+	return schMes, nil
+}
+
 // スケジュールドメッセージのレコードを新規作成
 func (repo *GormRepository) ResisterSchMes(schMes *model.SchMes) error {
 	// レコードを作成
