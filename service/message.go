@@ -43,7 +43,7 @@ func CreateScheduleListMessage(mesList []*model.SchMes) string {
 		result = "あなたが予約済みのメッセージはありません。"
 	} else {
 		// ヘッダー
-		result = "|ID|投稿日時|投稿先チャンネルID|メッセージ|\n|----|----|----|----|"
+		result = "|メッセージID|予約時刻|投稿先チャンネルID|本文|\n|----|----|----|----|"
 
 		// メッセージごとに行を追加
 		for _, mes := range mesList {
