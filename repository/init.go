@@ -2,6 +2,7 @@ package repository
 
 import (
 	"fmt"
+	"net/url"
 
 	"github.com/logica0419/scheduled-messenger-bot/config"
 	"gorm.io/driver/mysql"
@@ -10,7 +11,13 @@ import (
 
 // データベースを取得
 func getDB(c *config.Config) (*gorm.DB, error) {
-	dsn := fmt.Sprintf("%s:%s@tcp(%s:3306)/%s?charset=utf8mb4&parseTime=True&loc=Local", c.MariaDB_Username, c.MariaDB_Password, c.MariaDB_Hostname, c.MariaDB_Database)
+	dsn := fmt.Sprintf(
+		"%s:%s@tcp(%s:3306)/%s?charset=utf8mb4&parseTime=True&loc=Local",
+		url.QueryEscape(c.MariaDB_Username),
+		url.QueryEscape(c.MariaDB_Password),
+		url.PathEscape(c.MariaDB_Hostname),
+		url.QueryEscape(c.MariaDB_Database),
+	)
 
 	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	if err != nil {
