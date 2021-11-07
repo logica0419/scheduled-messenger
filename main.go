@@ -2,6 +2,7 @@ package main
 
 import (
 	"log"
+	"time"
 
 	"github.com/logica0419/scheduled-messenger-bot/config"
 	"github.com/logica0419/scheduled-messenger-bot/repository"
@@ -9,6 +10,18 @@ import (
 	"github.com/logica0419/scheduled-messenger-bot/service/api"
 	"github.com/logica0419/scheduled-messenger-bot/timer"
 )
+
+func init() {
+	// タイムゾーンの設定
+	const location = "Asia/Tokyo"
+
+	loc, err := time.LoadLocation(location)
+	if err != nil {
+		loc = time.FixedZone(location, 9*60*60)
+	}
+
+	time.Local = loc
+}
 
 func main() {
 	log.Print("Initializing Scheduled Messenger Bot...")

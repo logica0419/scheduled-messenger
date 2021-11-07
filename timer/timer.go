@@ -1,16 +1,11 @@
 package timer
 
 import (
-	"time"
-
 	"github.com/logica0419/scheduled-messenger-bot/config"
 	"github.com/logica0419/scheduled-messenger-bot/repository"
 	"github.com/logica0419/scheduled-messenger-bot/service/api"
 	"github.com/robfig/cron/v3"
 )
-
-// エリアの設定
-const location = "Asia/Tokyo"
 
 type timerFunc struct {
 	schedule string
@@ -22,16 +17,6 @@ type Timer struct {
 	c    *config.Config
 	api  *api.API
 	repo repository.Repository
-}
-
-func init() {
-	// タイムゾーンの設定
-	loc, err := time.LoadLocation(location)
-	if err != nil {
-		loc = time.FixedZone(location, 9*60*60)
-	}
-
-	time.Local = loc
 }
 
 func Setup(c *config.Config, api *api.API, repo repository.Repository) (*Timer, error) {
