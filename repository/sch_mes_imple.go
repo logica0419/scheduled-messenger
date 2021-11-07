@@ -1,6 +1,8 @@
 package repository
 
 import (
+	"time"
+
 	"github.com/google/uuid"
 	"github.com/logica0419/scheduled-messenger-bot/model"
 )
@@ -26,6 +28,20 @@ func (repo *GormRepository) GetSchMesByUserID(userID string) ([]*model.SchMes, e
 
 	// レコードを取得
 	res := repo.getTx().Order("time asc").Where("user_id = ?", userID).Find(&schMes)
+	if res.Error != nil {
+		return nil, res.Error
+	}
+
+	return schMes, nil
+}
+
+// 指定された時間より前の time を持つメッセージのレコードを全取得
+func (repo *GormRepository) GetSchMesByTime(time time.Time) ([]*model.SchMes, error) {
+	// 空のメッセージ構造体の変数を作成
+	var schMes []*model.SchMes
+
+	// レコードを取得
+	res := repo.getTx().Where("time <= ?", time).Find(&schMes)
 	if res.Error != nil {
 		return nil, res.Error
 	}

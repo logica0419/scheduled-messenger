@@ -17,6 +17,8 @@ type Config struct {
 	Verification_Token string `json:"verification_token,omitempty"`
 	// Bot_Access_Token Botからのアクセストークン (default: "")
 	Bot_Access_Token string `json:"bot_access_token,omitempty"`
+	// Log_Chan_ID エラーログを送信するチャンネルのID (default: "")
+	Log_Chan_ID string `json:"log_chan_id,omitempty"`
 	// DB のホスト (default: "mariadb")
 	MariaDB_Hostname string `json:"mariadb_hostname,omitempty"`
 	// DB の DB 名 (default: "SchMes")
@@ -34,6 +36,7 @@ func GetConfig() (*Config, error) {
 	viper.SetDefault("Bot_ID", "")
 	viper.SetDefault("Verification_Token", "")
 	viper.SetDefault("Bot_Access_Token", "")
+	viper.SetDefault("Log_Chan_ID", "")
 	viper.SetDefault("MariaDB_Hostname", "mariadb")
 	viper.SetDefault("MariaDB_Database", "SchMes")
 	viper.SetDefault("MariaDB_Username", "root")

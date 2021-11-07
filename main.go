@@ -7,6 +7,7 @@ import (
 	"github.com/logica0419/scheduled-messenger-bot/repository"
 	"github.com/logica0419/scheduled-messenger-bot/router"
 	"github.com/logica0419/scheduled-messenger-bot/service/api"
+	"github.com/logica0419/scheduled-messenger-bot/timer"
 )
 
 func main() {
@@ -23,6 +24,13 @@ func main() {
 	if err != nil {
 		log.Panicf("Error: failed to initialize DB - %s", err)
 	}
+
+	t, err := timer.Setup(c, api, repo)
+	if err != nil {
+		log.Panicf("Error: failed to initialize mes-sending timer - %s", err)
+	}
+
+	t.Start()
 
 	r := router.SetUpRouter(c, api, repo)
 
