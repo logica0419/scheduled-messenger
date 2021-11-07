@@ -1,7 +1,7 @@
 package service
 
 import (
-	"fmt"
+	"errors"
 	"time"
 
 	"github.com/google/uuid"
@@ -9,6 +9,8 @@ import (
 	"github.com/logica0419/scheduled-messenger-bot/repository"
 	"github.com/logica0419/scheduled-messenger-bot/service/api"
 )
+
+var ErrUserNotMatch = errors.New("access from different user")
 
 // 新たなメッセージを生成し、DB に登録
 func ResisterSchMes(repo repository.Repository, userID string, time time.Time, channelID string, body string) (*model.SchMes, error) {
@@ -67,7 +69,7 @@ func DeleteSchMesByID(repo repository.Repository, api *api.API, mesID string, us
 
 	// 予約したユーザーと削除を試みたユーザーが一致するか検証
 	if mes.UserID != userID {
-		return fmt.Errorf("access forbidden")
+		return ErrUserNotMatch
 	}
 
 	// DB から削除
