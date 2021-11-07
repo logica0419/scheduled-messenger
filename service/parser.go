@@ -33,7 +33,7 @@ func argparseScheduleCommand(command []string) (time.Time, string, string, error
 	// argumentを定義
 	channel := parser.String("c", "channel", &argparse.Options{Default: "", Help: "メッセージを送るチャンネル `#`からフルパスを記述してください 省略した場合は予約メッセージを送信したチャンネルに送ります"})
 	postTime := parser.String("t", "time", &argparse.Options{Required: true, Help: "メッセージを送る時間 フォーマット: `yyyy/mm/dd/hh:mm`"})
-	body := parser.String("b", "body", &argparse.Options{Required: true, Help: "送るメッセージ スペースが入るときは\"\"や''でくくって下さい 改行はスペースとして扱われます"})
+	body := parser.String("b", "body", &argparse.Options{Required: true, Help: "送るメッセージ スペースが入るときは\"\"や''でくくって下さい 改行したい場合は、したい箇所に`\\n`を挿入して下さい"})
 	parser.DisableHelp()
 
 	// パース
