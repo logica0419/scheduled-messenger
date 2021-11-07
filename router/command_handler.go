@@ -55,7 +55,7 @@ func deleteHandler(c echo.Context, api *api.API, repo repository.Repository, req
 	}
 
 	// スケジュールを DB から削除
-	err = service.DeleteSchMes(repo, api, id)
+	err = service.DeleteSchMesByID(repo, api, id)
 	if err != nil {
 		if uuid.IsInvalidLengthError(err) || errors.Is(err, gorm.ErrRecordNotFound) {
 			_ = api.SendMessage(req.GetChannelID(), "メッセージの削除に失敗しました\n```plaintext\n存在しないIDです\n```")
@@ -80,7 +80,7 @@ func listHandler(c echo.Context, api *api.API, repo repository.Repository, req *
 	userID := req.GetUserID()
 
 	// スケジュールを DB から取得
-	mesList, err := service.GetSchMesByUserID(repo, userID)
+	mesList, err := repo.GetSchMesByUserID(userID)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, errorMessage{Message: err.Error()})
 	}

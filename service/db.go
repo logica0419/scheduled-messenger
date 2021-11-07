@@ -46,7 +46,7 @@ func generateSchMes(userID string, time time.Time, channelID uuid.UUID, body str
 }
 
 // 指定された ID のメッセージを DB から削除
-func DeleteSchMes(repo repository.Repository, api *api.API, mesID string) error {
+func DeleteSchMesByID(repo repository.Repository, api *api.API, mesID string) error {
 	mesUUID, err := uuid.Parse(mesID)
 	if err != nil {
 		return err
@@ -58,14 +58,4 @@ func DeleteSchMes(repo repository.Repository, api *api.API, mesID string) error 
 	}
 
 	return nil
-}
-
-// 指定された UserID のメッセージを DB から取得
-func GetSchMesByUserID(repo repository.Repository, userID string) ([]*model.SchMes, error) {
-	mesList, err := repo.GetSchMesByUserID(userID)
-	if err != nil {
-		return nil, err
-	}
-
-	return mesList, nil
 }
