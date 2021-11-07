@@ -4,23 +4,23 @@
 
 ## 環境変数
 
-- `DevMode`  
+- `DEV_MODE`  
 開発モード (default: false)
-- `Bot_ID`  
+- `BOT_ID`  
 ボットのID (default: "")
-- `Verification_Token`  
+- `VERIFICATION_TOKEN`  
 Botへのリクエストの認証トークン (default: "")
-- `Bot_Access_Token`  
+- `BOT_ACCESS_TOKEN`  
 Botからのアクセストークン (default: "")
-- `Log_Chan_ID`  
+- `LOG_CHAN_ID`  
 エラーログを送信するチャンネルのID (default: "")
-- `MariaDB_Hostname`  
+- `MARIADB_HOSTNAME`  
 DB のホスト (default: "mariadb")
-- `MariaDB_Database`  
+- `MARIADB_DATABASE`  
 DB の DB 名 (default: "SchMes")
-- `MariaDB_Username`  
+- `MARIADB_USERNAME`  
 DB のユーザー名 (default: "root")
-- `MariaDB_Password`  
+- `MARIADB_PASSWORD`  
 DB のパスワード (default: "password")
 
 ## ローカルで動かすときのサンプル
