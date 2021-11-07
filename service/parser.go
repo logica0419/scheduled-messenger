@@ -33,7 +33,7 @@ func argparseScheduleCommand(command []string) (time.Time, string, string, error
 	// argumentを定義
 	channel := parser.String("c", "channel", &argparse.Options{Default: "", Help: "メッセージを送るチャンネル \"#\"からフルパスを記述してください 省略した場合は予約メッセージを送信したチャンネルに送ります"})
 	postTime := parser.String("t", "time", &argparse.Options{Required: true, Help: "メッセージを送る時間 フォーマット:`yyyy/mm/dd/hh:mm`"})
-	body := parser.String("b", "body", &argparse.Options{Required: true, Help: "送るメッセージ スペースが入るときは\"\"や''でくくって下さい 改行したい場合は、\"\"や''でくくった上で改行したい箇所に \\n を挿入して下さい"})
+	body := parser.String("b", "body", &argparse.Options{Required: true, Help: "送るメッセージ スペースが入るときは\"\"や''でくくって下さい 予約メッセージではメンションせずにbodyにメンションを入れたい場合、\"@.{id}\"と打てば自動で\"@{id}\"に変換されます 改行したい場合は、\"\"や''でくくった上で改行したい箇所に \\n を挿入して下さい"})
 	parser.DisableHelp()
 
 	// パース
@@ -53,7 +53,10 @@ func argparseScheduleCommand(command []string) (time.Time, string, string, error
 		return time.Now(), "", "", fmt.Errorf("メッセージの予約に失敗しました\n```plaintext\n%s```", parser.Usage("現在時刻より後の時間を指定してください"))
 	}
 
-	return parsedTime, *channel, *body, nil
+	// ボディをパース
+	parsedBody := bodyParse(*body)
+
+	return parsedTime, *channel, parsedBody, nil
 }
 
 // 記入された時間をtime.Timeに変換
@@ -68,6 +71,13 @@ func timeParse(t string) (time.Time, error) {
 	}
 
 	return parsed, nil
+}
+
+// body をから特定のルールにマッチする文字列を変換
+func bodyParse(body string) string {
+	replacedBody := strings.Replace(body, "@.", "@", -1)
+
+	return replacedBody
 }
 
 // 予約作成コマンドをパース
