@@ -10,7 +10,7 @@ import (
 type SchMes struct {
 	// メッセージの ID
 	ID uuid.UUID `gorm:"primaryKey"`
-	// 予約者の traQ ID
+	// 予約ユーザーの traQ ID
 	UserID string `gorm:"index"`
 	// 投稿時間
 	Time time.Time `gorm:"index"`

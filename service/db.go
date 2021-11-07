@@ -18,7 +18,7 @@ func ResisterSchMes(repo repository.Repository, userID string, time time.Time, c
 		return nil, err
 	}
 
-	// 新たな ScheduleMes 構造体型変数を生成
+	// 新たな SchMes 構造体型変数を生成
 	schMes, err := generateSchMes(userID, time, channelUUID, body)
 	if err != nil {
 		return nil, err
@@ -33,7 +33,7 @@ func ResisterSchMes(repo repository.Repository, userID string, time time.Time, c
 	return schMes, nil
 }
 
-// 新たな ScheduleMes 構造体型変数を生成
+// 新たな SchMes 構造体型変数を生成
 func generateSchMes(userID string, time time.Time, channelID uuid.UUID, body string) (*model.SchMes, error) {
 	// ID を生成
 	id, err := uuid.NewRandom()
@@ -41,7 +41,7 @@ func generateSchMes(userID string, time time.Time, channelID uuid.UUID, body str
 		return nil, err
 	}
 
-	// ScheduleMes 構造体型変数を生成
+	// SchMes 構造体型変数を生成
 	return &model.SchMes{
 		ID:        id,
 		UserID:    userID,
