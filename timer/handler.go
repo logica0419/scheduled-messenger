@@ -23,7 +23,7 @@ func (t *Timer) normalMesHandler() {
 	}
 
 	// メッセージが無い場合 return
-	if len(mesList) == 0 {
+	if len(mesList) == 0 && !t.c.Dev_Mode {
 		return
 	}
 
