@@ -62,12 +62,6 @@ func (repo *GormRepository) ResisterSchMes(schMes *model.SchMes) error {
 
 // 指定された ID のスケジュールドメッセージのレコードを削除
 func (repo *GormRepository) DeleteSchMesByID(mesID uuid.UUID) error {
-	// 指定された ID のレコードを検索 (存在しない ID の検証)
-	_, err := repo.GetSchMesByID(mesID)
-	if err != nil {
-		return err
-	}
-
 	// ID のみのメッセージ構造体の変数を作成 (primary key 指定のため)
 	schMes := model.SchMes{
 		ID: mesID,

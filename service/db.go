@@ -1,6 +1,7 @@
 package service
 
 import (
+	"fmt"
 	"time"
 
 	"github.com/google/uuid"
@@ -51,11 +52,22 @@ func generateSchMes(userID string, time time.Time, channelID uuid.UUID, body str
 }
 
 // 指定された ID のメッセージを DB から削除
-func DeleteSchMesByID(repo repository.Repository, api *api.API, mesID string) error {
+func DeleteSchMesByID(repo repository.Repository, api *api.API, mesID string, userID string) error {
 	// ID を UUID に変換
 	mesUUID, err := uuid.Parse(mesID)
 	if err != nil {
 		return err
+	}
+
+	// 指定された ID のレコードを検索 (存在しない ID の検証)
+	mes, err := repo.GetSchMesByID(mesUUID)
+	if err != nil {
+		return err
+	}
+
+	// 予約したユーザーと削除を試みたユーザーが一致するか検証
+	if mes.UserID != userID {
+		return fmt.Errorf("access forbidden")
 	}
 
 	// DB から削除

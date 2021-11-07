@@ -56,10 +56,16 @@ func deleteHandler(c echo.Context, api *api.API, repo repository.Repository, req
 	}
 
 	// スケジュールを DB から削除
-	err = service.DeleteSchMesByID(repo, api, id)
+	err = service.DeleteSchMesByID(repo, api, id, req.GetUserID())
 	if err != nil {
+		// 指定した ID のメッセージが存在しない場合エラーメッセージを送信
 		if uuid.IsInvalidLengthError(err) || errors.Is(err, gorm.ErrRecordNotFound) {
 			_ = api.SendMessage(req.GetChannelID(), "メッセージの削除に失敗しました\n```plaintext\n存在しないIDです\n```")
+			return c.JSON(http.StatusBadRequest, errorMessage{Message: err.Error()})
+		}
+		// 予約したユーザーと削除を試みたユーザーが違う場合エラーメッセージを送信
+		if errors.Is(err, fmt.Errorf("access forbidden")) {
+			_ = api.SendMessage(req.GetChannelID(), "メッセージの削除に失敗しました\n```plaintext\n権限がありません\n```")
 			return c.JSON(http.StatusBadRequest, errorMessage{Message: err.Error()})
 		}
 		return c.JSON(http.StatusInternalServerError, errorMessage{Message: err.Error()})
