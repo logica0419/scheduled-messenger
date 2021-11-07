@@ -11,6 +11,19 @@ import (
 	"github.com/logica0419/scheduled-messenger-bot/service/api"
 )
 
+// エリアの設定
+const location = "Asia/Tokyo"
+
+func init() {
+	// タイムゾーンの設定
+	loc, err := time.LoadLocation(location)
+	if err != nil {
+		loc = time.FixedZone(location, 9*60*60)
+	}
+
+	time.Local = loc
+}
+
 // プレーンテキストのメッセージを配列に分解
 func argvParse(message string) ([]string, error) {
 	// パース用関数
@@ -62,7 +75,7 @@ func timeParse(t string) (time.Time, error) {
 	const format = "2006/01/02/15:04"
 
 	// フォーマットに従ってパース
-	parsed, err := time.Parse(format, t)
+	parsed, err := time.ParseInLocation(format, t, time.Local)
 	if err != nil {
 		return time.Now(), err
 	}
