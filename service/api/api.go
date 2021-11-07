@@ -57,7 +57,10 @@ func (api *API) post(url string, body interface{}) error {
 
 	// リクエストを送信
 	res, err := api.client.Do(req)
-	log.Println(*res)
+	// Dev Mode の場合レスポンスをログに出す
+	if api.config.Dev_Mode {
+		log.Println(*res)
+	}
 	if err != nil {
 		return err
 	}

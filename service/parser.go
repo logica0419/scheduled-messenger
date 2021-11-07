@@ -73,8 +73,9 @@ func timeParse(t string) (time.Time, error) {
 	return parsed, nil
 }
 
-// body をから特定のルールにマッチする文字列を変換
+// body から特定のルールにマッチする文字列を変換
 func bodyParse(body string) string {
+	// メンションよけのパース (@.{id} を @{id} に変換)
 	replacedBody := strings.Replace(body, "@.", "@", -1)
 
 	return replacedBody
