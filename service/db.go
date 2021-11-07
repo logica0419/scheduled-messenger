@@ -1,7 +1,7 @@
 package service
 
 import (
-	"errors"
+	"fmt"
 	"time"
 
 	"github.com/google/uuid"
@@ -10,7 +10,7 @@ import (
 	"github.com/logica0419/scheduled-messenger-bot/service/api"
 )
 
-var ErrUserNotMatch = errors.New("access from different user")
+var ErrUserNotMatch = fmt.Errorf("access from different user")
 
 // 新たなメッセージを生成し、DB に登録
 func ResisterSchMes(repo repository.Repository, userID string, time time.Time, channelID string, body string) (*model.SchMes, error) {
