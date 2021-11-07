@@ -96,12 +96,18 @@ func ParseScheduleCommand(api *api.API, req *event.MessageEvent) (time.Time, str
 		distChannel = "このチャンネル"
 		distChannelID = req.GetChannelID()
 	} else {
-		// 指定されている場合 distChannel のIDを embedded から取得
+		// 指定されている場合 distChannel の ID を embedded から取得
 		for _, v := range req.Message.Embedded {
 			if v.Raw == distChannel && v.Type == "channel" {
 				distChannelID = v.ID
 				break
 			}
+		}
+
+		// embedded に ID が見つからなかった場合、エラーメッセージを送信
+		if distChannelID == "" {
+			_ = api.SendMessage(req.GetChannelID(), "メッセージの予約に失敗しました\n```plaintext\n無効なチャンネルです\n```")
+			return time.Now(), "", "", "", fmt.Errorf("failed to get channel ID: %s", err)
 		}
 	}
 
