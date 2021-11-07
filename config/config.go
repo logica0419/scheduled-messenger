@@ -9,15 +9,15 @@ import (
 
 // 設定の構造体
 type Config struct {
-	// DevMode 開発モードかどうか (default: false)
+	// 開発モード (default: false)
 	Dev_Mode bool `json:"dev_mode,omitempty"`
-	// Bot_ID ボットのID (default: "")
+	// ボットのID (default: "")
 	Bot_ID string `json:"bot_id,omitempty"`
-	// Verification_Token Botへのリクエストの認証トークン (default: "")
+	// Bot へのリクエストの認証トークン (default: "")
 	Verification_Token string `json:"verification_token,omitempty"`
-	// Bot_Access_Token Botからのアクセストークン (default: "")
+	// Bot からのアクセストークン (default: "")
 	Bot_Access_Token string `json:"bot_access_token,omitempty"`
-	// Log_Chan_ID エラーログを送信するチャンネルのID (default: "")
+	// エラーログを送信するチャンネルの ID (default: "")
 	Log_Chan_ID string `json:"log_chan_id,omitempty"`
 	// DB のホスト (default: "mariadb")
 	MariaDB_Hostname string `json:"mariadb_hostname,omitempty"`
