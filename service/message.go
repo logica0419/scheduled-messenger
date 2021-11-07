@@ -60,5 +60,5 @@ func CreateScheduleListMessage(mesList []*model.SchMes) string {
 
 // DB のレコードから実際に送るメッセージを生成
 func CreateScheduledMessage(mes *model.SchMes) string {
-	return fmt.Sprintf("### @%s さんからのメッセージ:\n%s", mes.UserID, mes.Body)
+	return fmt.Sprintf("### @%s さんからのメッセージ\n---\n%s", mes.UserID, mes.Body)
 }
