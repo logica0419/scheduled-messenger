@@ -2,6 +2,7 @@ package service
 
 import (
 	"fmt"
+	"strings"
 	"time"
 
 	"github.com/google/uuid"
@@ -47,7 +48,10 @@ func CreateScheduleListMessage(mesList []*model.SchMes) string {
 
 		// メッセージごとに行を追加
 		for _, mes := range mesList {
-			result += fmt.Sprintf("\n|%s|%s|%s|%s|", mes.ID, mes.Time.Format("2006年01月02日 15:04"), mes.ChannelID, mes.Body)
+			// MD におけるテーブル内の改行は <br> なので改行を <br> に変換
+			replacedBody := strings.Replace(mes.Body, "\n", "<br>", -1)
+
+			result += fmt.Sprintf("\n|%s|%s|%s|%s|", mes.ID, mes.Time.Format("2006年01月02日 15:04"), mes.ChannelID, replacedBody)
 		}
 	}
 
