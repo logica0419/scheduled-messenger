@@ -48,8 +48,8 @@ func CreateScheduleListMessage(mesList []*model.SchMes) string {
 
 		// メッセージごとに行を追加
 		for _, mes := range mesList {
-			// MD におけるテーブル内の改行は <br> なので改行を <br> に変換
-			replacedBody := strings.Replace(mes.Body, "\n", "<br>", -1)
+			// 改行記号を string として表示できるよう変換
+			replacedBody := strings.Replace(mes.Body, "\n", "`\\n`", -1)
 
 			result += fmt.Sprintf("\n|%s|%s|%s|%s|", mes.ID, mes.Time.Format("2006年01月02日 15:04"), mes.ChannelID, replacedBody)
 		}
