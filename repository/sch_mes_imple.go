@@ -25,7 +25,7 @@ func (repo *GormRepository) GetSchMesByUserID(userID string) ([]*model.SchMes, e
 	var schMes []*model.SchMes
 
 	// レコードを取得
-	res := repo.getTx().Where("user_id = ?", userID).Find(&schMes)
+	res := repo.getTx().Order("time asc").Where("user_id = ?", userID).Find(&schMes)
 	if res.Error != nil {
 		return nil, res.Error
 	}
