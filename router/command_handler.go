@@ -65,7 +65,7 @@ func deleteHandler(c echo.Context, api *api.API, repo repository.Repository, req
 		}
 		// 予約したユーザーと削除を試みたユーザーが違う場合エラーメッセージを送信
 		if errors.Is(err, service.ErrUserNotMatch) {
-			_ = api.SendMessage(req.GetChannelID(), "メッセージの削除に失敗しました\n```plaintext\n権限がありません\n```")
+			_ = api.SendMessage(req.GetChannelID(), "メッセージの削除に失敗しました\n```plaintext\n予約メッセージは予約したユーザーしか削除できません\n```")
 			return c.JSON(http.StatusForbidden, errorMessage{Message: err.Error()})
 		}
 		return c.JSON(http.StatusInternalServerError, errorMessage{Message: err.Error()})
