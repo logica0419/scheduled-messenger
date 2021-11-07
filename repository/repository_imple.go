@@ -20,7 +20,7 @@ var models = []interface{}{
 	&model.SchMes{},
 }
 
-// マイグレーションを実行
+// DB マイグレーションを実行
 func (repo *GormRepository) migrate() error {
 	err := repo.db.AutoMigrate(models...)
 	if err != nil {

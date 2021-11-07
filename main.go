@@ -24,28 +24,36 @@ func init() {
 }
 
 func main() {
+	// ログを出力
 	log.Print("Initializing Scheduled Messenger Bot...")
 
+	// 設定を読み込む
 	c, err := config.GetConfig()
 	if err != nil {
 		log.Panicf("Error: failed to get config - %s", err)
 	}
 
+	// API クライアントを取得
 	api := api.GetApi(c)
 
+	// リポジトリを取得
 	repo, err := repository.GetRepository(c)
 	if err != nil {
 		log.Panicf("Error: failed to initialize DB - %s", err)
 	}
 
+	// メッセージ送信タイマーをセットアップ
 	t, err := timer.Setup(c, api, repo)
 	if err != nil {
 		log.Panicf("Error: failed to initialize mes-sending timer - %s", err)
 	}
 
+	// メッセージ送信タイマーをスタート
 	t.Start()
 
-	r := router.SetUpRouter(c, api, repo)
+	// ルーターをセットアップ
+	r := router.Setup(c, api, repo)
 
+	// ルーターをスタート
 	r.Start()
 }

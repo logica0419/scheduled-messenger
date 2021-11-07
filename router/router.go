@@ -23,14 +23,17 @@ type Router struct {
 	Repo   repository.Repository
 }
 
+// エラーレスポンスのボディ構造体
 type errorMessage struct {
 	Message string `json:"message,omitempty"`
 }
 
 // ルーターのセットアップと取得
-func SetUpRouter(c *config.Config, api *api.API, repo repository.Repository) *Router {
+func Setup(c *config.Config, api *api.API, repo repository.Repository) *Router {
+	// ルーターを取得
 	r := newRouter(c, api, repo)
 
+	// ハンドラを追加
 	r.e.POST("/", r.botEventHandler, r.requestVerification)
 
 	return r
@@ -40,6 +43,7 @@ func SetUpRouter(c *config.Config, api *api.API, repo repository.Repository) *Ro
 func newEcho() *echo.Echo {
 	e := echo.New()
 
+	// ログの設定
 	e.Logger.SetLevel(log.DEBUG)
 	e.Logger.SetHeader("${time_rfc3339} ${prefix} ${short_file} ${line} |")
 	e.Use(middleware.LoggerWithConfig(middleware.LoggerConfig{Format: "${time_rfc3339} method = ${method} | uri = ${uri} | status = ${status} ${error}\n"}))
@@ -49,8 +53,10 @@ func newEcho() *echo.Echo {
 
 // 新しいルーターを取得
 func newRouter(c *config.Config, api *api.API, repo repository.Repository) *Router {
+	// Echo インスタンスを取得
 	e := newEcho()
 
+	// ルーターを作る
 	r := Router{e: e, Config: c, Api: api, Repo: repo}
 
 	return &r

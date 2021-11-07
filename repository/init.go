@@ -8,24 +8,6 @@ import (
 	"gorm.io/gorm"
 )
 
-// データベースを取得
-func getDB(c *config.Config) (*gorm.DB, error) {
-	dsn := fmt.Sprintf(
-		"%s:%s@tcp(%s:3306)/%s?charset=utf8mb4&parseTime=True&loc=Local",
-		c.MariaDB_Username,
-		c.MariaDB_Password,
-		c.MariaDB_Hostname,
-		c.MariaDB_Database,
-	)
-
-	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
-	if err != nil {
-		return nil, err
-	}
-
-	return db, nil
-}
-
 // 新たなリポジトリを生成
 func GetRepository(c *config.Config) (Repository, error) {
 	// DB を取得
@@ -44,4 +26,24 @@ func GetRepository(c *config.Config) (Repository, error) {
 	}
 
 	return repo, nil
+}
+
+// DB を取得
+func getDB(c *config.Config) (*gorm.DB, error) {
+	// DSN を生成
+	dsn := fmt.Sprintf(
+		"%s:%s@tcp(%s:3306)/%s?charset=utf8mb4&parseTime=True&loc=Local",
+		c.MariaDB_Username,
+		c.MariaDB_Password,
+		c.MariaDB_Hostname,
+		c.MariaDB_Database,
+	)
+
+	// DB に接続
+	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
+	if err != nil {
+		return nil, err
+	}
+
+	return db, nil
 }

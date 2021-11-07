@@ -14,12 +14,13 @@ import (
 	"gorm.io/gorm"
 )
 
+// コマンド一覧
 var commands = map[string]string{
-	"schedule": "!schedule",
-	"delete":   "!delete",
-	"list":     "!list",
-	"join":     "!join",
-	"leave":    "!leave",
+	"schedule": "!schedule", // 予約メッセージを作成する
+	"delete":   "!delete",   // 予約メッセージを削除する
+	"list":     "!list",     // 予約メッセージをリスト表示する
+	"join":     "!join",     // チャンネルに JOIN する
+	"leave":    "!leave",    // チャンネルから LEAVE する
 }
 
 // schedule コマンドハンドラー

@@ -11,16 +11,19 @@ import (
 
 // 新たなメッセージを生成し、DB に登録
 func ResisterSchMes(repo repository.Repository, userID string, time time.Time, channelID string, body string) (*model.SchMes, error) {
+	// チャンネル ID を UUID に変換
 	channelUUID, err := uuid.Parse(channelID)
 	if err != nil {
 		return nil, err
 	}
 
+	// 新たな ScheduleMes 構造体型変数を生成
 	schMes, err := generateSchMes(userID, time, channelUUID, body)
 	if err != nil {
 		return nil, err
 	}
 
+	// DB に登録
 	err = repo.ResisterSchMes(schMes)
 	if err != nil {
 		return nil, err
@@ -31,11 +34,13 @@ func ResisterSchMes(repo repository.Repository, userID string, time time.Time, c
 
 // 新たな ScheduleMes 構造体型変数を生成
 func generateSchMes(userID string, time time.Time, channelID uuid.UUID, body string) (*model.SchMes, error) {
+	// ID を生成
 	id, err := uuid.NewRandom()
 	if err != nil {
 		return nil, err
 	}
 
+	// ScheduleMes 構造体型変数を生成
 	return &model.SchMes{
 		ID:        id,
 		UserID:    userID,
@@ -47,11 +52,13 @@ func generateSchMes(userID string, time time.Time, channelID uuid.UUID, body str
 
 // 指定された ID のメッセージを DB から削除
 func DeleteSchMesByID(repo repository.Repository, api *api.API, mesID string) error {
+	// ID を UUID に変換
 	mesUUID, err := uuid.Parse(mesID)
 	if err != nil {
 		return err
 	}
 
+	// DB から削除
 	err = repo.DeleteSchMesByID(mesUUID)
 	if err != nil {
 		return err

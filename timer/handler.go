@@ -10,6 +10,7 @@ import (
 	"github.com/logica0419/scheduled-messenger-bot/service"
 )
 
+// 通常の予約投稿ハンドラ
 func (t *Timer) normalMesHandler() {
 	// 現在時刻を取得
 	currentTime := time.Now()
@@ -17,12 +18,12 @@ func (t *Timer) normalMesHandler() {
 	// 現在時刻より前に送信予定のメッセージを DB から取得
 	mesList, err := t.repo.GetSchMesByTime(currentTime)
 	if err != nil {
-		// レコードが存在しない以外のエラーが発生した時は、ログを config で指定したチャンネルに送信
+		// エラーが発生した時は、ログを config で指定したチャンネルに送信
 		_ = t.api.SendMessage(t.c.Log_Chan_ID, fmt.Sprintf("ErrorLog: %s レコードの取得に失敗しました\n```\nError: %s\n```", currentTime.Format("01/02 15:04"), err.Error()))
 		return
 	}
 
-	// メッセージが無い場合 return
+	// メッセージが無く、Dev Mode でない場合 return
 	if len(mesList) == 0 && !t.c.Dev_Mode {
 		return
 	}
@@ -49,7 +50,7 @@ func (t *Timer) normalMesHandler() {
 			err = t.api.SendMessage(mes.ChannelID.String(), sendingMes)
 			// エラーが起きたらログを config で指定したチャンネルに送信
 			if err != nil {
-				_ = t.api.SendMessage(t.c.Log_Chan_ID, fmt.Sprintf("ErrorLog: %s メッセージの送信に失敗しました\n```\nError: %s\n```", currentTime.Format("01/02 15:04"), err.Error()))
+				_ = t.api.SendMessage(t.c.Log_Chan_ID, fmt.Sprintf("ErrorLog: %s メッセージの送信に失敗しました\n```\nID: %s\nError: %s\n```", currentTime.Format("01/02 15:04"), mes.ID, err.Error()))
 			} else {
 				// 送った ID のメッセージを DB から削除
 				err = t.repo.DeleteSchMesByID(mes.ID)

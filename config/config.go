@@ -57,7 +57,8 @@ func GetConfig() (*Config, error) {
 		}
 	}
 
-	var C *Config // 設定格納用変数
+	// 設定格納用変数
+	var C *Config
 
 	// 設定格納用変数に設定を移す
 	err := viper.Unmarshal(&C)

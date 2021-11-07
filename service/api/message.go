@@ -5,6 +5,7 @@ import (
 	"log"
 )
 
+// メッセージ投稿リクエストボディ
 type Message struct {
 	Content string `json:"content,omitempty"`
 	Embed   bool   `json:"embed,omitempty"`
@@ -24,7 +25,7 @@ func (api *API) SendMessage(chanID string, message string) error {
 		body := Message{Content: message, Embed: true}
 
 		// リクエストを送信
-		err := api.Post(url, body)
+		err := api.post(url, body)
 		if err != nil {
 			return err
 		}

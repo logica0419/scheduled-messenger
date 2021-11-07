@@ -38,7 +38,7 @@ func setJsonHeader(req *http.Request) {
 }
 
 // POST リクエストを送信
-func (api *API) Post(url string, body interface{}) error {
+func (api *API) post(url string, body interface{}) error {
 	// ボディをバイト列に変換
 	byteBody, err := json.Marshal(body)
 	if err != nil {
@@ -66,29 +66,4 @@ func (api *API) Post(url string, body interface{}) error {
 	}
 
 	return nil
-}
-
-// GET リクエストを送信
-func (api *API) Get(url string) (*http.Response, error) {
-	// GET リクエストを作成
-	req, err := http.NewRequest("GET", url, nil)
-	if err != nil {
-		return nil, err
-	}
-
-	// ヘッダーを設定
-	setTokenHeader(req, api)
-	setJsonHeader(req)
-
-	// リクエストを送信
-	res, err := api.client.Do(req)
-	log.Println(*res)
-	if err != nil {
-		return nil, err
-	}
-	if res.StatusCode >= 300 {
-		return nil, fmt.Errorf(res.Status)
-	}
-
-	return res, nil
 }

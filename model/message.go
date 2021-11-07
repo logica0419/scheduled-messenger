@@ -8,9 +8,14 @@ import (
 
 // スケジュールドメッセージのモデル定義
 type SchMes struct {
-	ID        uuid.UUID `gorm:"primaryKey"`
-	UserID    string    `gorm:"index"`
-	Time      time.Time `gorm:"index"`
+	// メッセージの ID
+	ID uuid.UUID `gorm:"primaryKey"`
+	// 予約者の traQ ID
+	UserID string `gorm:"index"`
+	// 投稿時間
+	Time time.Time `gorm:"index"`
+	// 投稿先チャンネルの ID
 	ChannelID uuid.UUID
-	Body      string
+	// メッセージ本文
+	Body string
 }

@@ -11,12 +11,12 @@ import (
 
 // チャンネルに JOINED した際のメッセージを生成
 func CreateJoinedMessage(path string) string {
-	return fmt.Sprintf("これから Scheduled Messenher Bot は`%s`に投稿されるメッセージをチェックします!\nいつでも呼んで下さい!", path)
+	return fmt.Sprintf("これから Scheduled Messenher は`%s`に投稿されるメッセージをチェックします!\nいつでも呼んで下さい!", path)
 }
 
 // チャンネルから LEFT した際のメッセージを生成
 func CreateLeftMessage() string {
-	return "寂しいですがお別れです...\nScheduled Messenher Bot のご利用、ありがとうございました!"
+	return "寂しいですがお別れです...\nScheduled Messenher のご利用、ありがとうございました!"
 }
 
 // スケジュール作成時のメッセージを生成
@@ -60,5 +60,5 @@ func CreateScheduleListMessage(mesList []*model.SchMes) string {
 
 // DB のレコードから実際に送るメッセージを生成
 func CreateScheduledMessage(mes *model.SchMes) string {
-	return fmt.Sprintf("### @%s さんからのメッセージ\n---\n%s", mes.UserID, mes.Body)
+	return fmt.Sprintf("**@%s さんからのメッセージ**\n---\n%s", mes.UserID, mes.Body)
 }

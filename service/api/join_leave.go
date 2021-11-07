@@ -4,6 +4,7 @@ import (
 	"fmt"
 )
 
+// JOIN / LEAVE のリクエストボディ
 type ActionBody struct {
 	ChannelID string `json:"channelId,omitempty"`
 }
@@ -17,7 +18,7 @@ func (api *API) ChannelAction(cmd string, chanID string) error {
 	body := ActionBody{ChannelID: chanID}
 
 	// リクエストを送信
-	err := api.Post(url, body)
+	err := api.post(url, body)
 	if err != nil {
 		return err
 	}

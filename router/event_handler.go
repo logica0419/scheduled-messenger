@@ -20,26 +20,27 @@ const (
 	directMessageCreatedEvent = "DIRECT_MESSAGE_CREATED" // DIRECT_MESSAGE_CREATED イベント
 )
 
-// Botのハンドラ (ヘッダーの "X-TRAQ-BOT-EVENT" を見てイベントごとにハンドラを割り振る)
+// Botのハンドラ
 func (r *Router) botEventHandler(c echo.Context) error {
-	err := func() error {
-		switch c.Request().Header.Get(botEventHeader) {
-		case pingEvent:
-			return pingHandler(c)
-		case joinedEvent, leftEvent:
-			return systemHandler(c, r.Api)
-		case messageCreatedEvent, directMessageCreatedEvent:
-			return messageEventHandler(c, r.Api, r.Repo)
-		default: // 未実装のイベント
-			return c.JSON(http.StatusNotImplemented, errorMessage{Message: "not implemented"})
-		}
-	}()
+	// ヘッダーの "X-TRAQ-BOT-EVENT" を見てイベントごとにハンドラを割り振る
+	switch c.Request().Header.Get(botEventHeader) {
+	case pingEvent:
+		return pingHandler(c)
 
-	return err
+	case joinedEvent, leftEvent:
+		return systemHandler(c, r.Api)
+
+	case messageCreatedEvent, directMessageCreatedEvent:
+		return messageEventHandler(c, r.Api, r.Repo)
+
+	default: // 未実装のイベント
+		return c.JSON(http.StatusNotImplemented, errorMessage{Message: "not implemented"})
+	}
 }
 
 // PING システムイベントハンドラ
 func pingHandler(c echo.Context) error {
+	// NoContent を返す
 	return c.NoContent(http.StatusNoContent)
 }
 
@@ -52,7 +53,7 @@ func systemHandler(c echo.Context, api *api.API) error {
 		return c.JSON(http.StatusInternalServerError, errorMessage{Message: fmt.Sprintf("failed to get request body: %s", err)})
 	}
 
-	// メッセージを JOINED / LEFT したチャンネルに送信
+	// メッセージを作成
 	chanPath := req.GetChannelPath()
 	var mes string
 	switch c.Request().Header.Get(botEventHeader) {
@@ -62,6 +63,7 @@ func systemHandler(c echo.Context, api *api.API) error {
 		mes = service.CreateLeftMessage()
 	}
 
+	// メッセージを JOINED / LEFT したチャンネルに送信
 	err = api.SendMessage(req.GetChannelID(), mes)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, errorMessage{Message: fmt.Sprintf("failed to send message: %s", err)})
@@ -84,12 +86,16 @@ func messageEventHandler(c echo.Context, api *api.API, repo repository.Repositor
 			switch cmd {
 			case commands["schedule"]:
 				return scheduleHandler(c, api, repo, req)
+
 			case commands["delete"]:
 				return deleteHandler(c, api, repo, req)
+
 			case commands["list"]:
 				return listHandler(c, api, repo, req)
+
 			case commands["join"]:
 				return joinHandler(c, api, req)
+
 			case commands["leave"]:
 				return leaveHandler(c, api, req)
 			}
