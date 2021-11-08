@@ -35,14 +35,14 @@ func (time PeriodicTime) Format() string {
 
 	// 月
 	if time.Month != nil {
-		mes += fmt.Sprintf("%d月", *time.Month)
+		mes += fmt.Sprintf(" %02d 月", *time.Month)
 	} else {
 		mes += "毎月"
 	}
 
 	// 日
 	if time.Date != nil {
-		mes += fmt.Sprintf("%d日", *time.Date)
+		mes += fmt.Sprintf(" %02d 日", *time.Date)
 	} else {
 		mes += "毎日"
 	}
@@ -51,21 +51,23 @@ func (time PeriodicTime) Format() string {
 
 	// 時
 	if time.Hour != nil {
-		mes += fmt.Sprintf("%d時", *time.Hour)
+		mes += fmt.Sprintf(" %02d 時", *time.Hour)
 	} else {
 		mes += "毎時"
 	}
 
 	// 分
 	if time.Minute != nil {
-		mes += fmt.Sprintf("%d分", *time.Minute)
+		mes += fmt.Sprintf(" %02d 分", *time.Minute)
 	} else {
 		mes += "毎分"
 	}
 
+	mes += " "
+
 	// 曜日
 	if time.Day != nil {
-		mes += fmt.Sprintf(" 毎%s曜日", days[*time.Day])
+		mes += fmt.Sprintf("毎%s曜日", days[*time.Day])
 	}
 
 	return mes
