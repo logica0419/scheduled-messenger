@@ -2,6 +2,7 @@ package service
 
 import (
 	"fmt"
+	"strconv"
 	"strings"
 	"time"
 
@@ -21,13 +22,13 @@ func CreateJoinedMessage(path string) string {
 
 // チャンネルから LEFT した際のメッセージを生成
 func CreateLeftMessage() string {
-	return "寂しいですがお別れです...\nScheduled Messenher のご利用、ありがとうございました!"
+	return "寂しいですがお別れです...\nScheduled Messenger のご利用、ありがとうございました!"
 }
 
 // 予約投稿メッセージ作成時のメッセージを生成
 func CreateSchMesCreatedMessage(parsedTime time.Time, distChannel string, body string, id uuid.UUID) string {
 	return fmt.Sprintf(
-		"%s に`%s`、以下の内容を投稿します。\n```plaintext\n%s\n```\n予約を取り消したい場合は次のコマンドを Scheduled Messenger に送信して下さい。\n`!delete -i %s`",
+		"%s に`%s`、以下の内容を投稿します。\n```plaintext\n%s\n```\n登録を取り消したい場合は次のコマンドを Scheduled Messenger に送信して下さい。\n`!delete -i %s`",
 		distChannel,
 		parsedTime.Format("2006年01月02日 15:04"),
 		body,
@@ -35,25 +36,26 @@ func CreateSchMesCreatedMessage(parsedTime time.Time, distChannel string, body s
 	)
 }
 
-// 予約要綱メッセージ削除時のメッセージを生成
-func CreateSchMesDeletedMessage(id string) string {
-	return fmt.Sprintf("ID:`%s`のメッセージ送信予約を取り消しました。", id)
-}
-
 // 定期投稿メッセージ作成時のメッセージを生成
 func CreateSchMesPeriodicCreatedMessage(parsedTime model.PeriodicTime, distChannel string, body string, id uuid.UUID, repeat *int) string {
-	mes := fmt.Sprintf(
+	// 空のメッセージを作成
+	var mes string
+
+	// チャンネルと時間を追加
+	mes += fmt.Sprintf(
 		"%s に`%s`、",
 		distChannel,
 		parsedTime.Format(),
 	)
 
+	// リピートの設定がある場合追加
 	if repeat != nil {
-		mes += fmt.Sprintf("`%d回`", *repeat)
+		mes += fmt.Sprintf("`%d 回`", *repeat)
 	}
 
+	// 残りの文字列を追加
 	mes += fmt.Sprintf(
-		"以下の内容を投稿します。\n```plaintext\n%s\n```\n予約を取り消したい場合は次のコマンドを Scheduled Messenger に送信して下さい。\n`!delete -i %s`",
+		"以下の内容を投稿します。\n```plaintext\n%s\n```\n登録を取り消したい場合は次のコマンドを Scheduled Messenger に送信して下さい。\n`!delete -i %s`",
 		body,
 		id.String(),
 	)
@@ -61,7 +63,12 @@ func CreateSchMesPeriodicCreatedMessage(parsedTime model.PeriodicTime, distChann
 	return mes
 }
 
-// スケジュールリストの表 (MD) を生成
+// 登録メッセージ削除時のメッセージを生成
+func CreateSchMesDeletedMessage(id string) string {
+	return fmt.Sprintf("ID:`%s`のメッセージ送信登録を取り消しました。", id)
+}
+
+// 登録メッセージリストを生成
 func CreateScheduleListMessage(mesList []*model.SchMes, mesListPeriodic []*model.SchMesPeriodic) string {
 	var result string
 
@@ -69,7 +76,7 @@ func CreateScheduleListMessage(mesList []*model.SchMes, mesListPeriodic []*model
 	result += "### 予約投稿メッセージ\n"
 	// メッセージがない場合はその旨を伝える
 	if len(mesList) == 0 {
-		result += "あなたが予約済みのメッセージはありません。"
+		result += "登録済みのメッセージはありません。"
 	} else {
 		// ヘッダー
 		result += "|メッセージID|投稿時刻|投稿先チャンネルID|本文|\n|----|----|----|----|"
@@ -87,21 +94,30 @@ func CreateScheduleListMessage(mesList []*model.SchMes, mesListPeriodic []*model
 	result += "\n### 定期投稿メッセージ\n"
 	// メッセージがない場合はその旨を伝える
 	if len(mesListPeriodic) == 0 {
-		result += "あなたが予約済みのメッセージはありません。"
+		result += "登録済みのメッセージはありません。"
 	} else {
 		// ヘッダー
-		result += "|メッセージID|投稿時刻テンプレ|投稿先チャンネルID|本文|\n|----|----|----|----|"
+		result += "|メッセージID|投稿時刻テンプレ|残り投稿回数|投稿先チャンネルID|本文|\n|----|----|----|----|----|"
 
 		// メッセージごとに行を追加
 		for _, mes := range mesListPeriodic {
 			// 改行記号を string として表示できるよう変換
 			replacedBody := strings.Replace(mes.Body, "\n", "`\\n`", -1)
 
-			result += fmt.Sprintf("\n|%s|%s|%s|%s|", mes.ID, mes.Time.Format(), mes.ChannelID, replacedBody)
+			result += fmt.Sprintf("\n|%s|%s|%s|%s|%s|", mes.ID, mes.Time.Format(), formatRepeat(mes.Repeat), mes.ChannelID, replacedBody)
 		}
 	}
 
 	return result
+}
+
+// リピート回数のリスト用変換
+func formatRepeat(repeat *int) string {
+	if repeat == nil {
+		return "∞"
+	} else {
+		return strconv.Itoa(*repeat)
+	}
 }
 
 // DB のレコードから実際に送るメッセージを生成
