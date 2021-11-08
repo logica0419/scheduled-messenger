@@ -86,6 +86,9 @@ func CreateScheduleListMessage(mesList []*model.SchMes, mesListPeriodic []*model
 			// 改行記号を string として表示できるよう変換
 			replacedBody := strings.Replace(mes.Body, "\n", "`\\n`", -1)
 
+			// テーブル内からメンションが飛ばないように "@" を変換
+			replacedBody = strings.Replace(replacedBody, "@", "`@`", -1)
+
 			result += fmt.Sprintf("\n|%s|%s|%s|%s|", mes.ID, mes.Time.Format("2006年01月02日 15:04"), mes.ChannelID, replacedBody)
 		}
 	}
