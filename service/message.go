@@ -62,15 +62,17 @@ func CreateSchMesPeriodicCreatedMessage(parsedTime model.PeriodicTime, distChann
 }
 
 // スケジュールリストの表 (MD) を生成
-func CreateScheduleListMessage(mesList []*model.SchMes) string {
+func CreateScheduleListMessage(mesList []*model.SchMes, mesListPeriodic []*model.SchMesPeriodic) string {
 	var result string
 
+	// 予約投稿
+	result += "### 予約投稿メッセージ\n"
 	// メッセージがない場合はその旨を伝える
 	if len(mesList) == 0 {
-		result = "あなたが予約済みのメッセージはありません。"
+		result += "あなたが予約済みのメッセージはありません。"
 	} else {
 		// ヘッダー
-		result = "|メッセージID|予約時刻|投稿先チャンネルID|本文|\n|----|----|----|----|"
+		result += "|メッセージID|投稿時刻|投稿先チャンネルID|本文|\n|----|----|----|----|"
 
 		// メッセージごとに行を追加
 		for _, mes := range mesList {
@@ -78,6 +80,24 @@ func CreateScheduleListMessage(mesList []*model.SchMes) string {
 			replacedBody := strings.Replace(mes.Body, "\n", "`\\n`", -1)
 
 			result += fmt.Sprintf("\n|%s|%s|%s|%s|", mes.ID, mes.Time.Format("2006年01月02日 15:04"), mes.ChannelID, replacedBody)
+		}
+	}
+
+	// 定期投稿
+	result += "\n### 定期投稿メッセージ\n"
+	// メッセージがない場合はその旨を伝える
+	if len(mesListPeriodic) == 0 {
+		result += "あなたが予約済みのメッセージはありません。"
+	} else {
+		// ヘッダー
+		result += "|メッセージID|投稿時刻テンプレ|投稿先チャンネルID|本文|\n|----|----|----|----|"
+
+		// メッセージごとに行を追加
+		for _, mes := range mesListPeriodic {
+			// 改行記号を string として表示できるよう変換
+			replacedBody := strings.Replace(mes.Body, "\n", "`\\n`", -1)
+
+			result += fmt.Sprintf("\n|%s|%s|%s|%s|", mes.ID, mes.Time.Format(), mes.ChannelID, replacedBody)
 		}
 	}
 

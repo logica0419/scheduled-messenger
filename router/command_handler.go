@@ -169,14 +169,20 @@ func listHandler(c echo.Context, api *api.API, repo repository.Repository, req *
 	// ユーザー ID を取得
 	userID := req.GetUserID()
 
-	// スケジュールを DB から取得
+	// 予約投稿スケジュールを DB から取得
 	mesList, err := repo.GetSchMesByUserID(userID)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, errorMessage{Message: err.Error()})
 	}
 
+	// 定期投稿スケジュールを DB から取得
+	mesListPeriodic, err := repo.GetSchMesPeriodicByUserID(userID)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, errorMessage{Message: err.Error()})
+	}
+
 	// 予約メッセージリストを送信
-	mes := service.CreateScheduleListMessage(mesList)
+	mes := service.CreateScheduleListMessage(mesList, mesListPeriodic)
 	err = api.SendMessage(req.GetChannelID(), mes)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, errorMessage{Message: fmt.Sprintf("failed to send message: %s", err)})

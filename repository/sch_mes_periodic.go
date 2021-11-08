@@ -10,6 +10,9 @@ type SchMesPeriodicRepository interface {
 	// 指定された ID の定期投稿メッセージのレコードを取得
 	GetSchMesPeriodicByID(mesID uuid.UUID) (*model.SchMesPeriodic, error)
 
+	// 指定された UserID の予約投稿メッセージのレコードを全取得
+	GetSchMesPeriodicByUserID(userID string) ([]*model.SchMesPeriodic, error)
+
 	// 定期投稿メッセージのレコードを新規作成
 	ResisterSchMesPeriodic(schMesPeriodic *model.SchMesPeriodic) error
 
