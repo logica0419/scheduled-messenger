@@ -29,3 +29,19 @@ func (repo *GormRepository) ResisterSchMesPeriodic(schMesPeriodic *model.SchMesP
 
 	return nil
 }
+
+// 指定された ID の定期投稿メッセージのレコードを削除
+func (repo *GormRepository) DeleteSchMesPeriodicByID(mesID uuid.UUID) error {
+	// ID のみの定期投稿メッセージ構造体の変数を作成 (primary key 指定のため)
+	schMesPeriodic := model.SchMesPeriodic{
+		ID: mesID,
+	}
+
+	// 指定された ID のレコードを削除
+	res := repo.getTx().Delete(&schMesPeriodic)
+	if res.Error != nil {
+		return res.Error
+	}
+
+	return nil
+}
