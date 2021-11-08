@@ -54,7 +54,7 @@ func scheduleHandler(c echo.Context, api *api.API, repo repository.Repository, r
 	// 確認メッセージ
 	var mes string
 	// 時間の表記にワイルドカードが含まれているかで処理を分岐
-	if strings.Contains(*time, "*") { // 予約投稿
+	if strings.Contains(*time, "*") { // 定期投稿
 		// 時間をパース
 		parsedTime, err := parser.TimeParsePeriodic(time)
 		if err != nil {
@@ -72,7 +72,7 @@ func scheduleHandler(c echo.Context, api *api.API, repo repository.Repository, r
 		// 確認メッセージを生成
 		mes = service.CreateSchMesPeriodicCreatedMessage(schMesPeriodic.Time, *distChannel, schMesPeriodic.Body, schMesPeriodic.ID, schMesPeriodic.Repeat)
 
-	} else { // 定期投稿
+	} else { // 予約投稿
 		// repeat が入力されていたらエラーメッセージを送る
 		if repeat != nil {
 			service.SendCreateErrorMessage(api, req.GetChannelID(), fmt.Errorf("予約投稿でリピートは使用できません"))
@@ -114,11 +114,15 @@ func deleteHandler(c echo.Context, api *api.API, repo repository.Repository, req
 		return c.JSON(http.StatusBadRequest, errorMessage{Message: err.Error()})
 	}
 
-	// スケジュールを DB から削除
+	// 予約投稿スケジュールを DB から削除
 	err = service.DeleteSchMesByID(repo, api, *id, req.GetUserID())
 	if err != nil {
-		// 指定した ID のメッセージが存在しない場合エラーメッセージを送信
-		if uuid.IsInvalidLengthError(err) || errors.Is(err, gorm.ErrRecordNotFound) {
+		// 指定した ID のメッセージが存在しない場合定期投稿の削除を試みる
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			goto periodic
+		}
+		// 指定した ID が無効な場合エラーメッセージを送信
+		if uuid.IsInvalidLengthError(err) {
 			service.SendDeleteErrorMessage(api, req.GetChannelID(), fmt.Errorf("存在しないIDです"))
 			return c.JSON(http.StatusBadRequest, errorMessage{Message: err.Error()})
 		}
@@ -130,7 +134,27 @@ func deleteHandler(c echo.Context, api *api.API, repo repository.Repository, req
 		return c.JSON(http.StatusInternalServerError, errorMessage{Message: err.Error()})
 	}
 
-	// 確認メッセージを送信
+	goto message
+
+periodic: // 定期投稿スケジュールを DB から削除
+	err = service.DeleteSchMesPeriodicByID(repo, api, *id, req.GetUserID())
+	if err != nil {
+		// 指定した ID のメッセージが存在しない場合エラーメッセージを送信
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			service.SendDeleteErrorMessage(api, req.GetChannelID(), fmt.Errorf("存在しないIDです"))
+			return c.JSON(http.StatusBadRequest, errorMessage{Message: err.Error()})
+		}
+		// 予約したユーザーと削除を試みたユーザーが違う場合エラーメッセージを送信
+		if errors.Is(err, service.ErrUserNotMatch) {
+			service.SendDeleteErrorMessage(api, req.GetChannelID(), fmt.Errorf("予約メッセージは予約したユーザーしか削除できません"))
+			return c.JSON(http.StatusForbidden, errorMessage{Message: err.Error()})
+		}
+		return c.JSON(http.StatusInternalServerError, errorMessage{Message: err.Error()})
+	}
+
+	goto message
+
+message: // 確認メッセージを送信
 	mes := service.CreateSchMesDeletedMessage(*id)
 	err = api.SendMessage(req.GetChannelID(), mes)
 	if err != nil {
