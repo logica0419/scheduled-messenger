@@ -7,7 +7,7 @@ import (
 	"github.com/logica0419/scheduled-messenger-bot/model"
 )
 
-// 指定された ID のスケジュールドメッセージのレコードを取得
+// 指定された ID の予約投稿メッセージのレコードを取得
 func (repo *GormRepository) GetSchMesByID(mesID uuid.UUID) (*model.SchMes, error) {
 	// 空のメッセージ構造体の変数を作成
 	var schMes *model.SchMes
@@ -21,7 +21,7 @@ func (repo *GormRepository) GetSchMesByID(mesID uuid.UUID) (*model.SchMes, error
 	return schMes, nil
 }
 
-// 指定された UserID のスケジュールドメッセージのレコードを全取得
+// 指定された UserID の予約投稿メッセージのレコードを全取得
 func (repo *GormRepository) GetSchMesByUserID(userID string) ([]*model.SchMes, error) {
 	// 空のメッセージ構造体の変数を作成
 	var schMes []*model.SchMes
@@ -49,7 +49,7 @@ func (repo *GormRepository) GetSchMesByTime(time time.Time) ([]*model.SchMes, er
 	return schMes, nil
 }
 
-// スケジュールドメッセージのレコードを新規作成
+// 予約投稿メッセージのレコードを新規作成
 func (repo *GormRepository) ResisterSchMes(schMes *model.SchMes) error {
 	// レコードを作成
 	res := repo.getTx().Create(schMes)
@@ -60,7 +60,7 @@ func (repo *GormRepository) ResisterSchMes(schMes *model.SchMes) error {
 	return nil
 }
 
-// 指定された ID のスケジュールドメッセージのレコードを削除
+// 指定された ID の予約投稿メッセージのレコードを削除
 func (repo *GormRepository) DeleteSchMesByID(mesID uuid.UUID) error {
 	// ID のみのメッセージ構造体の変数を作成 (primary key 指定のため)
 	schMes := model.SchMes{

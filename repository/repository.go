@@ -10,6 +10,6 @@ type Repository interface {
 	// 新たなトランザクション用 DB セッションを取得
 	getTx() *gorm.DB
 
-	// sch_mes テーブル操作リポジトリ
+	// 予約投稿テーブル操作リポジトリ
 	SchMesRepository
 }
