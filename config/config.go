@@ -9,24 +9,15 @@ import (
 
 // 設定の構造体
 type Config struct {
-	// 開発モード (default: false)
-	Dev_Mode bool `json:"dev_mode,omitempty"`
-	// ボットのID (default: "")
-	Bot_ID string `json:"bot_id,omitempty"`
-	// Bot へのリクエストの認証トークン (default: "")
-	Verification_Token string `json:"verification_token,omitempty"`
-	// Bot からのアクセストークン (default: "")
-	Bot_Access_Token string `json:"bot_access_token,omitempty"`
-	// エラーログを送信するチャンネルの ID (default: "")
-	Log_Chan_ID string `json:"log_chan_id,omitempty"`
-	// DB のホスト (default: "mariadb")
-	MariaDB_Hostname string `json:"mariadb_hostname,omitempty"`
-	// DB の DB 名 (default: "SchMes")
-	MariaDB_Database string `json:"mariadb_database,omitempty"`
-	// DB のユーザー名 (default: "root")
-	MariaDB_Username string `json:"mariadb_username,omitempty"`
-	// DB のパスワード (default: "password")
-	MariaDB_Password string `json:"mariadb_password,omitempty"`
+	Dev_Mode           bool   `json:"dev_mode,omitempty"`           // 開発モード (default: false)
+	Bot_ID             string `json:"bot_id,omitempty"`             // ボットのID (default: "")
+	Verification_Token string `json:"verification_token,omitempty"` // Bot へのリクエストの認証トークン (default: "")
+	Bot_Access_Token   string `json:"bot_access_token,omitempty"`   // Bot からのアクセストークン (default: "")
+	Log_Chan_ID        string `json:"log_chan_id,omitempty"`        // エラーログを送信するチャンネルの ID (default: "")
+	MariaDB_Hostname   string `json:"mariadb_hostname,omitempty"`   // DB のホスト (default: "mariadb")
+	MariaDB_Database   string `json:"mariadb_database,omitempty"`   // DB の DB 名 (default: "SchMes")
+	MariaDB_Username   string `json:"mariadb_username,omitempty"`   // DB のユーザー名 (default: "root")
+	MariaDB_Password   string `json:"mariadb_password,omitempty"`   // DB のパスワード (default: "password")
 }
 
 // 設定を読み込み
@@ -58,13 +49,13 @@ func GetConfig() (*Config, error) {
 	}
 
 	// 設定格納用変数
-	var C *Config
+	var c *Config
 
 	// 設定格納用変数に設定を移す
-	err := viper.Unmarshal(&C)
+	err := viper.Unmarshal(&c)
 	if err != nil {
 		return nil, fmt.Errorf("Error: failed to unmarshal config - %s ", err)
 	}
 
-	return C, nil
+	return c, nil
 }
