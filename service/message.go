@@ -24,8 +24,8 @@ func CreateLeftMessage() string {
 	return "寂しいですがお別れです...\nScheduled Messenher のご利用、ありがとうございました!"
 }
 
-// スケジュール作成時のメッセージを生成
-func CreateScheduleCreatedMessage(parsedTime time.Time, distChannel string, body string, id uuid.UUID) string {
+// 予約投稿メッセージ作成時のメッセージを生成
+func CreateSchMesCreatedMessage(parsedTime time.Time, distChannel string, body string, id uuid.UUID) string {
 	return fmt.Sprintf(
 		"%s に`%s`、以下の内容を投稿します。\n```plaintext\n%s\n```\n予約を取り消したい場合は次のコマンドを Scheduled Messenger に送信して下さい。\n`!delete -i %s`",
 		distChannel,
@@ -35,9 +35,30 @@ func CreateScheduleCreatedMessage(parsedTime time.Time, distChannel string, body
 	)
 }
 
-// スケジュール削除時のメッセージを生成
-func CreateScheduleDeletedMessage(id string) string {
+// 予約要綱メッセージ削除時のメッセージを生成
+func CreateSchMesDeletedMessage(id string) string {
 	return fmt.Sprintf("ID:`%s`のメッセージ送信予約を取り消しました。", id)
+}
+
+// 定期投稿メッセージ作成時のメッセージを生成
+func CreateSchMesPeriodicCreatedMessage(parsedTime model.PeriodicTime, distChannel string, body string, id uuid.UUID, repeat *int) string {
+	mes := fmt.Sprintf(
+		"%s に`%s`、",
+		distChannel,
+		parsedTime.Format(),
+	)
+
+	if repeat != nil {
+		mes += fmt.Sprintf("`%d回`", *repeat)
+	}
+
+	mes += fmt.Sprintf(
+		"以下の内容を投稿します。\n```plaintext\n%s\n```\n予約を取り消したい場合は次のコマンドを Scheduled Messenger に送信して下さい。\n`!delete -i %s`",
+		body,
+		id.String(),
+	)
+
+	return mes
 }
 
 // スケジュールリストの表 (MD) を生成

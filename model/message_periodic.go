@@ -1,6 +1,8 @@
 package model
 
 import (
+	"fmt"
+
 	"github.com/google/uuid"
 )
 
@@ -21,4 +23,50 @@ type PeriodicTime struct {
 	Hour   *int `gorm:"type:int(2)"` // 時
 	Minute *int `gorm:"type:int(2)"` // 分
 	Day    *int `gorm:"type:int(1)"` // 曜日
+}
+
+// 曜日の対応表
+var days = [7]string{"日", "月", "火", "水", "木", "金", "土"}
+
+// 時間をメッセージに使えるようフォーマット
+func (time PeriodicTime) Format() string {
+	// 年
+	mes := "毎年"
+
+	// 月
+	if time.Month != nil {
+		mes += fmt.Sprintf("%d月", *time.Month)
+	} else {
+		mes += "毎月"
+	}
+
+	// 日
+	if time.Date != nil {
+		mes += fmt.Sprintf("%d日", *time.Date)
+	} else {
+		mes += "毎日"
+	}
+
+	mes += " "
+
+	// 時
+	if time.Hour != nil {
+		mes += fmt.Sprintf("%d時", *time.Hour)
+	} else {
+		mes += "毎時"
+	}
+
+	// 分
+	if time.Minute != nil {
+		mes += fmt.Sprintf("%d分", *time.Minute)
+	} else {
+		mes += "毎分"
+	}
+
+	// 曜日
+	if time.Day != nil {
+		mes += fmt.Sprintf(" 毎%s曜日", days[*time.Day])
+	}
+
+	return mes
 }

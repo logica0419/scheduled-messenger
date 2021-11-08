@@ -1,42 +1,37 @@
 package service
 
 import (
-	"fmt"
-	"time"
-
 	"github.com/google/uuid"
 	"github.com/logica0419/scheduled-messenger-bot/model"
 	"github.com/logica0419/scheduled-messenger-bot/repository"
 	"github.com/logica0419/scheduled-messenger-bot/service/api"
 )
 
-var ErrUserNotMatch = fmt.Errorf("access from different user")
-
-// 新たな予約投稿メッセージを生成し、DB に登録
-func ResisterSchMes(repo repository.Repository, userID string, time time.Time, channelID string, body string) (*model.SchMes, error) {
+// 新たな定期投稿メッセージを生成し、DB に登録
+func ResisterSchMesPeriodic(repo repository.Repository, userID string, time model.PeriodicTime, channelID string, body string, repeat *int) (*model.SchMesPeriodic, error) {
 	// チャンネル ID を UUID に変換
 	channelUUID, err := uuid.Parse(channelID)
 	if err != nil {
 		return nil, err
 	}
 
-	// 新たな SchMes 構造体型変数を生成
-	schMes, err := generateSchMes(userID, time, channelUUID, body)
+	// 新たな SchMesPeriodic 構造体型変数を生成
+	schMesPeriodic, err := generateSchMesPeriodic(userID, time, channelUUID, body, repeat)
 	if err != nil {
 		return nil, err
 	}
 
 	// DB に登録
-	err = repo.ResisterSchMes(schMes)
+	err = repo.ResisterSchMesPeriodic(schMesPeriodic)
 	if err != nil {
 		return nil, err
 	}
 
-	return schMes, nil
+	return schMesPeriodic, nil
 }
 
-// 新たな SchMes 構造体型変数を生成
-func generateSchMes(userID string, time time.Time, channelID uuid.UUID, body string) (*model.SchMes, error) {
+// 新たな SchMesPeriodic 構造体型変数を生成
+func generateSchMesPeriodic(userID string, time model.PeriodicTime, channelID uuid.UUID, body string, repeat *int) (*model.SchMesPeriodic, error) {
 	// ID を生成
 	id, err := uuid.NewRandom()
 	if err != nil {
@@ -44,17 +39,18 @@ func generateSchMes(userID string, time time.Time, channelID uuid.UUID, body str
 	}
 
 	// SchMes 構造体型変数を生成
-	return &model.SchMes{
+	return &model.SchMesPeriodic{
 		ID:        id,
 		UserID:    userID,
 		Time:      time,
+		Repeat:    repeat,
 		ChannelID: channelID,
 		Body:      body,
 	}, nil
 }
 
-// 指定された ID の予約投稿メッセージを DB から削除
-func DeleteSchMesByID(repo repository.Repository, api *api.API, mesID string, userID string) error {
+// 指定された ID の定期投稿メッセージを DB から削除
+func DeleteSchMesByIDPeriodic(id string, repo repository.Repository, api *api.API, mesID string, userID string) error {
 	// ID を UUID に変換
 	mesUUID, err := uuid.Parse(mesID)
 	if err != nil {
@@ -62,7 +58,7 @@ func DeleteSchMesByID(repo repository.Repository, api *api.API, mesID string, us
 	}
 
 	// 指定された ID のレコードを検索 (存在しない ID の検証)
-	mes, err := repo.GetSchMesByID(mesUUID)
+	mes, err := repo.GetSchMesPeriodicByID(mesUUID)
 	if err != nil {
 		return err
 	}
@@ -73,7 +69,7 @@ func DeleteSchMesByID(repo repository.Repository, api *api.API, mesID string, us
 	}
 
 	// DB から削除
-	err = repo.DeleteSchMesByID(mesUUID)
+	err = repo.DeleteSchMesPeriodicByID(mesUUID)
 	if err != nil {
 		return err
 	}
