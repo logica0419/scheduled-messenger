@@ -43,6 +43,11 @@ func scheduleHandler(c echo.Context, api *api.API, repo repository.Repository, r
 	// メッセージをパースし、要素を取得
 	time, distChannel, distChannelID, body, repeat, err := parser.ParseScheduleCommand(api, req)
 	if err != nil {
+		// Argv パース以外のところでエラーを吐いたらメッセージを送信
+		_err := err
+		if !errors.As(fmt.Errorf("failed to parse argv"), &_err) {
+			service.SendCreateErrorMessage(api, req.GetChannelID(), fmt.Errorf("メッセージをパースできません\n%s", err))
+		}
 		return c.JSON(http.StatusBadRequest, errorMessage{Message: err.Error()})
 	}
 
@@ -53,14 +58,14 @@ func scheduleHandler(c echo.Context, api *api.API, repo repository.Repository, r
 		// 時間をパース
 		parsedTime, err := parser.TimeParsePeriodic(time)
 		if err != nil {
-			_ = api.SendMessage(req.GetChannelID(), fmt.Sprintf("メッセージの予約に失敗しました\n```plaintext\n%s\n```", err))
+			service.SendCreateErrorMessage(api, req.GetChannelID(), fmt.Errorf("無効な時間表記です\n%s", err))
 			return c.JSON(http.StatusBadRequest, errorMessage{Message: err.Error()})
 		}
 
 		// スケジュールをDB に 登録
 		schMesPeriodic, err := service.ResisterSchMesPeriodic(repo, req.GetUserID(), *parsedTime, *distChannelID, *body, repeat)
 		if err != nil {
-			_ = api.SendMessage(req.GetChannelID(), fmt.Sprintf("メッセージの予約に失敗しました\n```plaintext\nDB エラーです\n%s\n```", err))
+			service.SendCreateErrorMessage(api, req.GetChannelID(), fmt.Errorf("DB エラーです\n%s", err))
 			return c.JSON(http.StatusInternalServerError, errorMessage{Message: err.Error()})
 		}
 
@@ -70,21 +75,21 @@ func scheduleHandler(c echo.Context, api *api.API, repo repository.Repository, r
 	} else { // 定期投稿
 		// repeat が入力されていたらエラーメッセージを送る
 		if repeat != nil {
-			_ = api.SendMessage(req.GetChannelID(), "メッセージの予約に失敗しました\n```plaintext\n予約投稿でリピートは使用できません\n```")
+			service.SendCreateErrorMessage(api, req.GetChannelID(), fmt.Errorf("予約投稿でリピートは使用できません"))
 			return c.JSON(http.StatusBadRequest, errorMessage{Message: "予約投稿でリピートは使用できません"})
 		}
 
 		// 時間をパース
 		parsedTime, err := parser.TimeParse(time)
 		if err != nil {
-			_ = api.SendMessage(req.GetChannelID(), fmt.Sprintf("メッセージの予約に失敗しました\n```plaintext\n無効な時間表記です\n%s\n```", err))
+			service.SendCreateErrorMessage(api, req.GetChannelID(), fmt.Errorf("無効な時間表記です\n%s", err))
 			return c.JSON(http.StatusBadRequest, errorMessage{Message: err.Error()})
 		}
 
 		// スケジュールを DB に登録
 		schMes, err := service.ResisterSchMes(repo, req.GetUserID(), *parsedTime, *distChannelID, *body)
 		if err != nil {
-			_ = api.SendMessage(req.GetChannelID(), fmt.Sprintf("メッセージの予約に失敗しました\n```plaintext\nDB エラーです\n%s\n```", err))
+			service.SendCreateErrorMessage(api, req.GetChannelID(), fmt.Errorf("DB エラーです\n%s", err))
 			return c.JSON(http.StatusInternalServerError, errorMessage{Message: err.Error()})
 		}
 
@@ -114,12 +119,12 @@ func deleteHandler(c echo.Context, api *api.API, repo repository.Repository, req
 	if err != nil {
 		// 指定した ID のメッセージが存在しない場合エラーメッセージを送信
 		if uuid.IsInvalidLengthError(err) || errors.Is(err, gorm.ErrRecordNotFound) {
-			_ = api.SendMessage(req.GetChannelID(), "メッセージの削除に失敗しました\n```plaintext\n存在しないIDです\n```")
+			service.SendDeleteErrorMessage(api, req.GetChannelID(), fmt.Errorf("存在しないIDです"))
 			return c.JSON(http.StatusBadRequest, errorMessage{Message: err.Error()})
 		}
 		// 予約したユーザーと削除を試みたユーザーが違う場合エラーメッセージを送信
 		if errors.Is(err, service.ErrUserNotMatch) {
-			_ = api.SendMessage(req.GetChannelID(), "メッセージの削除に失敗しました\n```plaintext\n予約メッセージは予約したユーザーしか削除できません\n```")
+			service.SendDeleteErrorMessage(api, req.GetChannelID(), fmt.Errorf("予約メッセージは予約したユーザーしか削除できません"))
 			return c.JSON(http.StatusForbidden, errorMessage{Message: err.Error()})
 		}
 		return c.JSON(http.StatusInternalServerError, errorMessage{Message: err.Error()})

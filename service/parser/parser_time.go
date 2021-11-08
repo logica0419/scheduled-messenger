@@ -35,7 +35,7 @@ func TimeParsePeriodic(t *string) (*model.PeriodicTime, error) {
 
 	// 配列の長さの確認
 	if len(timeArr) != 5 && len(timeArr) != 6 {
-		return nil, fmt.Errorf("無効な時間表記です")
+		return nil, fmt.Errorf("フォーマットが異なります")
 	}
 
 	// 年がワイルドカードになっていることの確認
@@ -54,7 +54,7 @@ func TimeParsePeriodic(t *string) (*model.PeriodicTime, error) {
 			// 値を数値に変換
 			intTime, err := strconv.Atoi(timeArr[i])
 			if err != nil {
-				return nil, err
+				return nil, fmt.Errorf("時間の数値変換ができません\n%s", err)
 			}
 
 			// 項目ごとに Validation と代入

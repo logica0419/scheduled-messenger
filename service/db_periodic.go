@@ -50,7 +50,7 @@ func generateSchMesPeriodic(userID string, time model.PeriodicTime, channelID uu
 }
 
 // 指定された ID の定期投稿メッセージを DB から削除
-func DeleteSchMesByIDPeriodic(id string, repo repository.Repository, api *api.API, mesID string, userID string) error {
+func DeleteSchMesByIDPeriodic(repo repository.Repository, api *api.API, mesID string, userID string) error {
 	// ID を UUID に変換
 	mesUUID, err := uuid.Parse(mesID)
 	if err != nil {
