@@ -37,16 +37,21 @@ type User struct {
 }
 
 // メッセージテキスト 取得メソッド
-func (r *MessageEvent) GetText() string {
-	return r.Message.PlainText
+func (body *MessageEvent) GetText() string {
+	return body.Message.PlainText
 }
 
 // チャンネルID 取得メソッド
-func (r *MessageEvent) GetChannelID() string {
-	return r.Message.ChannelID
+func (body *MessageEvent) GetChannelID() string {
+	return body.Message.ChannelID
 }
 
 // ユーザーID 取得メソッド
-func (r *MessageEvent) GetUserID() string {
-	return r.Message.User.Name
+func (body *MessageEvent) GetUserID() string {
+	return body.Message.User.Name
+}
+
+// Embedded 配列取得メソッド
+func (body *MessageEvent) GetEmbeddedList() []Embedded {
+	return body.Message.Embedded
 }

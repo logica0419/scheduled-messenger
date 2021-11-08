@@ -29,11 +29,11 @@ type Creator struct {
 }
 
 // チャンネルID 取得メソッド
-func (r *SystemEvent) GetChannelID() string {
-	return r.Channel.ID
+func (body *SystemEvent) GetChannelID() string {
+	return body.Channel.ID
 }
 
 // チャンネルパス 取得メソッド
-func (r *SystemEvent) GetChannelPath() string {
-	return r.Channel.Path
+func (body *SystemEvent) GetChannelPath() string {
+	return body.Channel.Path
 }
