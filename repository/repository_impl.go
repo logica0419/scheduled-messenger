@@ -18,6 +18,7 @@ func (repo *GormRepository) getTx() *gorm.DB {
 // 現在の全モデル
 var models = []interface{}{
 	&model.SchMes{},
+	&model.SchMesPeriodic{},
 }
 
 // DB マイグレーションを実行
