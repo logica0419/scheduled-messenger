@@ -27,16 +27,15 @@ func argvParse(message string) ([]string, error) {
 // 予約作成コマンドから要素を抽出
 func argparseScheduleCommand(command []string) (*string, *string, *string, *int, error) {
 	// パーサーを定義
-	parser := argparse.NewParser("schedule", "メッセージを予約する")
+	parser := argparse.NewParser("schedule", "メッセージを登録する")
 
 	// argumentを定義
 	channel := parser.String("c", "channel", &argparse.Options{Help: "メッセージを送るチャンネル \"#\"からフルパスを記述してください 省略した場合は予約メッセージを送信したチャンネルに送ります"})
-	postTime := parser.String("t", "time",
-		&argparse.Options{Required: true, Help: "メッセージを送る時間 フォーマット:`yyyy/mm/dd/hh:mm`"})
-	body := parser.String("b", "body",
-		&argparse.Options{Required: true,
-			Help: "送るメッセージ スペースが入るときは\"\"や''でくくって下さい 予約メッセージではメンションせずにbodyにメンションを入れたい場合、\"@.{id}\"と打てば自動で\"@{id}\"に変換されます 改行したい場合は、\"\"や''でくくった上で改行したい箇所に \\n を挿入して下さい"})
-	repeat := parser.Int("r", "repeat", &argparse.Options{Help: "(定期投稿のみ) 投稿を繰り返す回数"})
+	postTime := parser.String("t", "time", &argparse.Options{Required: true,
+		Help: "メッセージを送る時間 予約投稿フォーマット:`yyyy/mm/dd/hh:mm` 定期投稿フォーマット:`yyyy/mm/dd/hh:mm/d(曜日)` 曜日は0が日曜、6が土曜に対応する1桁の整数で書いてください"})
+	body := parser.String("b", "body", &argparse.Options{Required: true,
+		Help: "送るメッセージ スペースが入るときは\"\"や''でくくって下さい 予約メッセージではメンションせずにbodyにメンションを入れたい場合、\"@.{id}\"と打てば自動で\"@{id}\"に変換されます 改行したい場合は、\"\"や''でくくった上で改行したい箇所に \\n を挿入して下さい"})
+	repeat := parser.Int("r", "repeat", &argparse.Options{Help: "(定期投稿のみ) 投稿を繰り返す回数 1以上の回数を指定してください 0か省略で無限に繰り返します"})
 	parser.DisableHelp()
 
 	// パース
