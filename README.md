@@ -35,7 +35,7 @@ export DEV_MODE=
 export BOT_ID=
 export VERIFICATION_TOKEN=
 export BOT_ACCESS_TOKEN=
-export LOG_CHAN_ID
+export LOG_CHAN_ID=
 export MARIADB_HOSTNAME=
 export MARIADB_DATABASE=
 export MARIADB_USERNAME=
