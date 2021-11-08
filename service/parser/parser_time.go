@@ -47,8 +47,8 @@ func TimeParsePeriodic(t *string) (*model.PeriodicTime, error) {
 	timeArr = timeArr[1:]
 
 	// 定期投稿の time を作成
-	var parsedTime *model.PeriodicTime
-	for i := 0; i < 5; i++ {
+	parsedTime := &model.PeriodicTime{}
+	for i := range timeArr {
 		// ワイルドカードの時は何もしない (その項目は何も代入されないのでポインターが nil になる)
 		if timeArr[i] != "*" {
 			// 値を数値に変換
@@ -66,22 +66,25 @@ func TimeParsePeriodic(t *string) (*model.PeriodicTime, error) {
 				parsedTime.Month = &intTime
 
 			case 1: // 日付
-				switch *parsedTime.Month { // 月ごとに上限の日付が違うので月によって Validation を変更
-				case 1, 3, 5, 7, 8, 10, 12: // 31 日まである月
+				// 月ごとに上限の日付が違うので月によって Validation を変更
+				if parsedTime.Month == nil { // 月が nil だった (月の指定がない) 場合
 					if intTime < 1 || intTime > 31 {
 						return nil, fmt.Errorf("有効な日付ではありません")
 					}
-				case 4, 6, 9, 11: // 30 日まである月
-					if intTime < 1 || intTime > 30 {
-						return nil, fmt.Errorf("有効な日付ではありません")
-					}
-				case 2: // 29 日まである月
-					if intTime < 1 || intTime > 29 {
-						return nil, fmt.Errorf("有効な日付ではありません")
-					}
-				default: // 月が nil だった (月の指定がない) 場合
-					if intTime < 1 || intTime > 31 {
-						return nil, fmt.Errorf("有効な日付ではありません")
+				} else {
+					switch *parsedTime.Month {
+					case 1, 3, 5, 7, 8, 10, 12: // 31 日まである月
+						if intTime < 1 || intTime > 31 {
+							return nil, fmt.Errorf("有効な日付ではありません")
+						}
+					case 4, 6, 9, 11: // 30 日まである月
+						if intTime < 1 || intTime > 30 {
+							return nil, fmt.Errorf("有効な日付ではありません")
+						}
+					case 2: // 29 日まである月
+						if intTime < 1 || intTime > 29 {
+							return nil, fmt.Errorf("有効な日付ではありません")
+						}
 					}
 				}
 				parsedTime.Date = &intTime

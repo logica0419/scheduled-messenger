@@ -45,6 +45,14 @@ func argparseScheduleCommand(command []string) (*string, *string, *string, *int,
 		return nil, nil, nil, nil, fmt.Errorf("メッセージの予約に失敗しました\n```plaintext\n%s```", parser.Usage(err))
 	}
 
+	// 不可欠な argument 以外がデフォルト値の場合、 nil に変換
+	if *channel == "" {
+		channel = nil
+	}
+	if *repeat == 0 {
+		repeat = nil
+	}
+
 	// ボディをパース
 	parsedBody := bodyParse(body)
 
@@ -79,11 +87,13 @@ func ParseScheduleCommand(api *api.API, req *event.MessageEvent) (*string, *stri
 		return nil, nil, nil, nil, nil, fmt.Errorf("failed to parse argv: %s", err)
 	}
 
-	// チャンネルが指定されてないとき、ID と名前を取得
 	var distChannelID *string
+	// チャンネルが指定されてないとき、ID と名前を取得
 	if distChannel == nil {
-		*distChannel = "このチャンネル"
-		*distChannelID = req.GetChannelID()
+		_distChannel := "このチャンネル"
+		distChannel = &_distChannel
+		_distChannelID := req.GetChannelID()
+		distChannelID = &_distChannelID
 	} else {
 		// 指定されている場合 distChannel の ID を embedded から取得
 		for _, v := range req.GetEmbeddedList() {
@@ -96,7 +106,7 @@ func ParseScheduleCommand(api *api.API, req *event.MessageEvent) (*string, *stri
 		// embedded に ID が見つからなかった場合、エラーメッセージを送信
 		if distChannelID == nil {
 			_ = api.SendMessage(req.GetChannelID(), "メッセージの予約に失敗しました\n```plaintext\n無効なチャンネルです\n```")
-			return nil, nil, nil, nil, nil, fmt.Errorf("failed to get channel ID: %s", err)
+			return nil, nil, nil, nil, nil, fmt.Errorf("failed to get channel ID: invalid channel")
 		}
 	}
 
