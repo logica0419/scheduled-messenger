@@ -9,6 +9,11 @@ import (
 	"github.com/logica0419/scheduled-messenger-bot/model"
 )
 
+// ヘルプメッセージを生成
+func CreateHelpMessage() string {
+	return "[Wiki](https://wiki.trap.jp/bot/Sch_Mes#head2) の使い方を参照してください！"
+}
+
 // チャンネルに JOINED した際のメッセージを生成
 func CreateJoinedMessage(path string) string {
 	return fmt.Sprintf("これから Scheduled Messenher は`%s`に投稿されるメッセージをチェックします!\nいつでも呼んで下さい!", path)

@@ -84,6 +84,9 @@ func messageEventHandler(c echo.Context, api *api.API, repo repository.Repositor
 	for _, cmd := range commands {
 		if strings.Contains(req.GetText(), cmd) {
 			switch cmd {
+			case commands["help"]:
+				return helpHandler(c, api, req)
+
 			case commands["schedule"]:
 				return scheduleHandler(c, api, repo, req)
 

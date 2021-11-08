@@ -16,11 +16,24 @@ import (
 
 // コマンド一覧
 var commands = map[string]string{
+	"help":     "help",      // ヘルプを表示する
 	"schedule": "!schedule", // 予約メッセージを作成する
 	"delete":   "!delete",   // 予約メッセージを削除する
 	"list":     "!list",     // 予約メッセージをリスト表示する
 	"join":     "!join",     // チャンネルに JOIN する
 	"leave":    "!leave",    // チャンネルから LEAVE する
+}
+
+// help コマンドハンドラー
+func helpHandler(c echo.Context, api *api.API, req *event.MessageEvent) error {
+	mes := service.CreateHelpMessage()
+
+	err := api.SendMessage(req.GetChannelID(), mes)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, errorMessage{Message: fmt.Sprintf("failed to send message: %s", err)})
+	}
+
+	return c.NoContent(http.StatusNoContent)
 }
 
 // schedule コマンドハンドラー
