@@ -15,7 +15,7 @@ type Message struct {
 func (api *API) SendMessage(chanID string, message string) error {
 	// 開発モードではコンソールにメッセージを表示するのみ
 	if api.config.Dev_Mode {
-		log.Printf("Sending %s to %s", message, chanID)
+		log.Printf("Sending\n%s\nto %s", message, chanID)
 		return nil
 	} else {
 		// URL を生成
