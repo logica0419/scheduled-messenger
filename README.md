@@ -44,5 +44,5 @@ export MARIADB_PASSWORD=
 go run ./*.go
 ```
 
-MariaDBが`{MONGODB_HOSTNAME}:3306`(デフォルトのポート)で立っていることを確認してください。  
+MariaDBが`{MARIADB_HOSTNAME}:3306`(デフォルトのポート)で立っていることを確認してください。  
 ポート`8080`でサーバーが立つので、`localhost:8080`のエンドポイントにリクエストを送り、レスポンスを確かめてください。
