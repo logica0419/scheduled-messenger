@@ -97,7 +97,7 @@ func ParseScheduleCommand(api *api.API, req *event.MessageEvent) (*string, *stri
 		// 指定されている場合 distChannel の ID を embedded から取得
 		for _, v := range req.GetEmbeddedList() {
 			if v.Raw == *distChannel && v.Type == "channel" {
-				*distChannelID = v.ID
+				distChannelID = &v.ID
 				break
 			}
 		}
