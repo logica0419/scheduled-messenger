@@ -4,10 +4,34 @@ import (
 	"fmt"
 	"regexp"
 	"strconv"
+	"strings"
 	"time"
 
+	"github.com/cosiner/argv"
 	"github.com/logica0419/scheduled-messenger-bot/model"
 )
+
+// プレーンテキストのメッセージを配列に分解
+func argvParse(message string) ([]string, error) {
+	// パース用関数を定義
+	var identity = func(s string) (string, error) { return s, nil }
+
+	// パース
+	parsed, err := argv.Argv(message, identity, identity)
+	if err != nil || len(parsed) == 0 {
+		return nil, err
+	}
+
+	return parsed[0], nil
+}
+
+// body から特定のルールにマッチする文字列を変換
+func bodyParse(body *string) *string {
+	// メンションよけのパース (@.{id} を @{id} に変換)
+	replacedBody := strings.Replace(*body, "@.", "@", -1)
+
+	return &replacedBody
+}
 
 // 記入された時間を time.Time に変換
 func TimeParse(t *string) (*time.Time, error) {

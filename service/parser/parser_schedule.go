@@ -5,23 +5,8 @@ import (
 	"strings"
 
 	"github.com/akamensky/argparse"
-	"github.com/cosiner/argv"
 	"github.com/logica0419/scheduled-messenger-bot/model/event"
 )
-
-// プレーンテキストのメッセージを配列に分解
-func argvParse(message string) ([]string, error) {
-	// パース用関数を定義
-	var identity = func(s string) (string, error) { return s, nil }
-
-	// パース
-	parsed, err := argv.Argv(message, identity, identity)
-	if err != nil || len(parsed) == 0 {
-		return nil, err
-	}
-
-	return parsed[0], nil
-}
 
 // 予約作成コマンドから要素を抽出
 func argparseScheduleCommand(command []string) (*string, *string, *string, *int, error) {
@@ -55,14 +40,6 @@ func argparseScheduleCommand(command []string) (*string, *string, *string, *int,
 	parsedBody := bodyParse(body)
 
 	return postTime, channel, parsedBody, repeat, nil
-}
-
-// body から特定のルールにマッチする文字列を変換
-func bodyParse(body *string) *string {
-	// メンションよけのパース (@.{id} を @{id} に変換)
-	replacedBody := strings.Replace(*body, "@.", "@", -1)
-
-	return &replacedBody
 }
 
 // 予約作成コマンドをパース
