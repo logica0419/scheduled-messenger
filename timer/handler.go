@@ -150,6 +150,7 @@ func (t *Timer) schMesPeriodicHandler() {
 	log.Printf("Log: %d個の定期投稿メッセージが正常に送信されました", sentMes)
 }
 
+// 定期投稿メッセージを時間でフィルター
 func filterSchMesPeriodicByTime(mesList []*model.SchMesPeriodic, currentTime time.Time) []*model.SchMesPeriodic {
 	// フィルター済みのメッセージリスト格納用変数
 	filtered := []*model.SchMesPeriodic{}
