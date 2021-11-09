@@ -68,31 +68,31 @@ func bodyParse(body *string) *string {
 // 予約作成コマンドをパース
 func ParseScheduleCommand(req *event.MessageEvent) (*string, *string, *string, *string, *int, error) {
 	// メッセージを配列に
-	listedReqMes, err := argvParse(req.GetText())
+	mesList, err := argvParse(req.GetText())
 	if err != nil {
 		return nil, nil, nil, nil, nil, fmt.Errorf("failed to parse argv: %s", err)
 	}
 
 	// 冒頭にメンションがついていた場合要素をドロップ
-	if strings.Contains(listedReqMes[0], "@") {
-		listedReqMes = listedReqMes[1:]
+	if strings.Contains(mesList[0], "@") {
+		mesList = mesList[1:]
 	}
 
 	// メッセージをパース
-	parsedTime, distChannel, body, repeat, err := argparseScheduleCommand(listedReqMes)
+	parsedTime, distChannel, body, repeat, err := argparseScheduleCommand(mesList)
 	if err != nil {
 		return nil, nil, nil, nil, nil, err
 	}
 
 	var distChannelID *string
-	// チャンネルが指定されてないとき、ID と名前を取得
+	// チャンネルが指定されてない場合、ID と名前を取得
 	if distChannel == nil {
 		_distChannel := "このチャンネル"
 		distChannel = &_distChannel
 		_distChannelID := req.GetChannelID()
 		distChannelID = &_distChannelID
 	} else {
-		// 指定されている場合 distChannel の ID を embedded から取得
+		// 指定されている場合、distChannel の ID を embedded から取得
 		for _, v := range req.GetEmbeddedList() {
 			if v.Raw == *distChannel && v.Type == "channel" {
 				distChannelID = &v.ID
