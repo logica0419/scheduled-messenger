@@ -42,7 +42,7 @@ func GetConfig() (*Config, error) {
 	viper.SetConfigType("json")
 	if err := viper.ReadInConfig(); err != nil {
 		if _, ok := err.(viper.ConfigFileNotFoundError); ok {
-			log.Print("Unable to find .env file, default settings or environmental variables are to be used.")
+			log.Print("Unable to find config file, default settings or environmental variables are to be used.")
 		} else {
 			return nil, fmt.Errorf("Error: failed to load .env file - %s ", err)
 		}
