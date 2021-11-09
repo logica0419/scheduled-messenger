@@ -7,9 +7,9 @@ import (
 )
 
 func SendCreateErrorMessage(api *api.API, channelID string, err error) {
-	_ = api.SendMessage(channelID, fmt.Sprintf("メッセージの予約に失敗しました\n```plaintext\n%s\n```", err))
+	_ = api.SendMessage(channelID, fmt.Sprintf("メッセージの予約に失敗しました\n```plaintext\n%s```", err))
 }
 
 func SendDeleteErrorMessage(api *api.API, channelID string, err error) {
-	_ = api.SendMessage(channelID, fmt.Sprintf("メッセージの削除に失敗しました\n```plaintext\n%s\n```", err))
+	_ = api.SendMessage(channelID, fmt.Sprintf("メッセージの削除に失敗しました\n```plaintext\n%s```", err))
 }

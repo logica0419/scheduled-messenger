@@ -54,14 +54,14 @@ func scheduleHandler(c echo.Context, api *api.API, repo repository.Repository, r
 		// 時間をパース
 		parsedTime, err := parser.TimeParsePeriodic(time)
 		if err != nil {
-			service.SendCreateErrorMessage(api, req.GetChannelID(), fmt.Errorf("無効な時間表記です\n%s", err))
+			service.SendCreateErrorMessage(api, req.GetChannelID(), fmt.Errorf("無効な時間表記です\n%s\n", err))
 			return c.JSON(http.StatusBadRequest, errorMessage{Message: err.Error()})
 		}
 
 		// スケジュールをDB に 登録
 		schMesPeriodic, err := service.ResisterSchMesPeriodic(repo, req.GetUserID(), *parsedTime, *distChannelID, *body, repeat)
 		if err != nil {
-			service.SendCreateErrorMessage(api, req.GetChannelID(), fmt.Errorf("DB エラーです\n%s", err))
+			service.SendCreateErrorMessage(api, req.GetChannelID(), fmt.Errorf("DB エラーです\n%s\n", err))
 			return c.JSON(http.StatusInternalServerError, errorMessage{Message: err.Error()})
 		}
 
@@ -71,21 +71,21 @@ func scheduleHandler(c echo.Context, api *api.API, repo repository.Repository, r
 	} else { // 予約投稿
 		// repeat が入力されていたらエラーメッセージを送る
 		if repeat != nil {
-			service.SendCreateErrorMessage(api, req.GetChannelID(), fmt.Errorf("予約投稿でリピートは使用できません"))
-			return c.JSON(http.StatusBadRequest, errorMessage{Message: "予約投稿でリピートは使用できません"})
+			service.SendCreateErrorMessage(api, req.GetChannelID(), fmt.Errorf("予約投稿でリピートは使用できません\n"))
+			return c.JSON(http.StatusBadRequest, errorMessage{Message: "予約投稿でリピートは使用できません\n"})
 		}
 
 		// 時間をパース
 		parsedTime, err := parser.TimeParse(time)
 		if err != nil {
-			service.SendCreateErrorMessage(api, req.GetChannelID(), fmt.Errorf("無効な時間表記です\n%s", err))
+			service.SendCreateErrorMessage(api, req.GetChannelID(), fmt.Errorf("無効な時間表記です\n%s\n", err))
 			return c.JSON(http.StatusBadRequest, errorMessage{Message: err.Error()})
 		}
 
 		// スケジュールを DB に登録
 		schMes, err := service.ResisterSchMes(repo, req.GetUserID(), *parsedTime, *distChannelID, *body)
 		if err != nil {
-			service.SendCreateErrorMessage(api, req.GetChannelID(), fmt.Errorf("DB エラーです\n%s", err))
+			service.SendCreateErrorMessage(api, req.GetChannelID(), fmt.Errorf("DB エラーです\n%s\n", err))
 			return c.JSON(http.StatusInternalServerError, errorMessage{Message: err.Error()})
 		}
 
@@ -107,6 +107,7 @@ func deleteHandler(c echo.Context, api *api.API, repo repository.Repository, req
 	// メッセージをパースし、要素を取得
 	id, err := parser.ParseDeleteCommand(req)
 	if err != nil {
+		service.SendCreateErrorMessage(api, req.GetChannelID(), fmt.Errorf("メッセージをパースできません\n%s", err))
 		return c.JSON(http.StatusBadRequest, errorMessage{Message: err.Error()})
 	}
 
@@ -119,12 +120,12 @@ func deleteHandler(c echo.Context, api *api.API, repo repository.Repository, req
 		}
 		// 指定した ID が無効な場合エラーメッセージを送信
 		if uuid.IsInvalidLengthError(err) {
-			service.SendDeleteErrorMessage(api, req.GetChannelID(), fmt.Errorf("存在しないIDです"))
+			service.SendDeleteErrorMessage(api, req.GetChannelID(), fmt.Errorf("存在しないIDです\n"))
 			return c.JSON(http.StatusBadRequest, errorMessage{Message: err.Error()})
 		}
 		// 予約したユーザーと削除を試みたユーザーが違う場合エラーメッセージを送信
 		if errors.Is(err, service.ErrUserNotMatch) {
-			service.SendDeleteErrorMessage(api, req.GetChannelID(), fmt.Errorf("予約メッセージは予約したユーザーしか削除できません"))
+			service.SendDeleteErrorMessage(api, req.GetChannelID(), fmt.Errorf("予約メッセージは予約したユーザーしか削除できません\n"))
 			return c.JSON(http.StatusForbidden, errorMessage{Message: err.Error()})
 		}
 		return c.JSON(http.StatusInternalServerError, errorMessage{Message: err.Error()})
@@ -137,12 +138,12 @@ periodic: // 定期投稿スケジュールを DB から削除
 	if err != nil {
 		// 指定した ID のメッセージが存在しない場合エラーメッセージを送信
 		if errors.Is(err, gorm.ErrRecordNotFound) {
-			service.SendDeleteErrorMessage(api, req.GetChannelID(), fmt.Errorf("存在しないIDです"))
+			service.SendDeleteErrorMessage(api, req.GetChannelID(), fmt.Errorf("存在しないIDです\n"))
 			return c.JSON(http.StatusBadRequest, errorMessage{Message: err.Error()})
 		}
 		// 予約したユーザーと削除を試みたユーザーが違う場合エラーメッセージを送信
 		if errors.Is(err, service.ErrUserNotMatch) {
-			service.SendDeleteErrorMessage(api, req.GetChannelID(), fmt.Errorf("予約メッセージは予約したユーザーしか削除できません"))
+			service.SendDeleteErrorMessage(api, req.GetChannelID(), fmt.Errorf("予約メッセージは予約したユーザーしか削除できません\n"))
 			return c.JSON(http.StatusForbidden, errorMessage{Message: err.Error()})
 		}
 		return c.JSON(http.StatusInternalServerError, errorMessage{Message: err.Error()})
