@@ -15,7 +15,7 @@ func argparseEditCommand(command []string) (*string, *string, *string, *string, 
 
 	// argumentを定義
 	id := parser.String("i", "id", &argparse.Options{Required: true, Help: "編集するメッセージのID"})
-	channel := parser.String("c", "channel", &argparse.Options{Help: "メッセージを送るチャンネル \"#\"からフルパスを記述してください 省略した場合は予約メッセージを送信したチャンネルに送ります"})
+	channel := parser.String("c", "channel", &argparse.Options{Help: "メッセージを送るチャンネル \"#\"からフルパスを記述してください"})
 	postTime := parser.String("t", "time", &argparse.Options{
 		Help: "メッセージを送る時間 予約投稿フォーマット:`yyyy/mm/dd/hh:mm` 定期投稿フォーマット:`yyyy/mm/dd/hh:mm/d(曜日)` 曜日はオプションです。曜日は0が日曜、6が土曜に対応する1桁の整数で記入して下さい"})
 	body := parser.String("b", "body", &argparse.Options{
