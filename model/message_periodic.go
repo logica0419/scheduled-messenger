@@ -64,11 +64,9 @@ func (time PeriodicTime) Format() string {
 		mes += "毎分"
 	}
 
-	mes += " "
-
 	// 曜日
 	if time.Day != nil {
-		mes += fmt.Sprintf("毎%s曜日", days[*time.Day])
+		mes += fmt.Sprintf(" 毎%s曜日", days[*time.Day])
 	}
 
 	return mes

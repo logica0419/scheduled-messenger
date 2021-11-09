@@ -75,3 +75,14 @@ func (repo *GormRepository) DeleteSchMesByID(mesID uuid.UUID) error {
 
 	return nil
 }
+
+// 予約投稿メッセージのレコードを更新
+func (repo *GormRepository) UpdateSchMes(schMes *model.SchMes) error {
+	// レコードを更新
+	res := repo.getTx().Model(schMes).Select("*").Updates(schMes)
+	if res.Error != nil {
+		return res.Error
+	}
+
+	return nil
+}

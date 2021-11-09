@@ -23,4 +23,7 @@ type SchMesRepository interface {
 
 	// 指定された ID の予約投稿メッセージのレコードを削除
 	DeleteSchMesByID(mesID uuid.UUID) error
+
+	// 予約投稿メッセージのレコードを更新
+	UpdateSchMes(schMes *model.SchMes) error
 }

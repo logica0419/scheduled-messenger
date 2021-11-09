@@ -77,7 +77,7 @@ func (repo *GormRepository) DeleteSchMesPeriodicByID(mesID uuid.UUID) error {
 // 定期投稿メッセージのレコードを更新
 func (repo *GormRepository) UpdateSchMesPeriodic(schMesPeriodic *model.SchMesPeriodic) error {
 	// レコードを更新
-	res := repo.getTx().Model(&schMesPeriodic).Updates(schMesPeriodic)
+	res := repo.getTx().Model(schMesPeriodic).Select("*").Updates(schMesPeriodic)
 	if res.Error != nil {
 		return res.Error
 	}

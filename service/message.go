@@ -25,28 +25,43 @@ func CreateLeftMessage() string {
 	return "寂しいですがお別れです...\nScheduled Messenger のご利用、ありがとうございました!"
 }
 
-// 予約投稿メッセージ作成時のメッセージを生成
-func CreateSchMesCreatedMessage(parsedTime time.Time, distChannel string, body string, id uuid.UUID) string {
-	return fmt.Sprintf(
-		"%s に`%s`、以下の内容を投稿します。\n```plaintext\n%s\n```\n登録を取り消したい場合は次のコマンドを Scheduled Messenger に送信して下さい。\n`!delete -i %s`",
-		distChannel,
-		parsedTime.Format("2006年01月02日 15:04"),
-		body,
-		id.String(),
-	)
-}
-
-// 定期投稿メッセージ作成時のメッセージを生成
-func CreateSchMesPeriodicCreatedMessage(parsedTime model.PeriodicTime, distChannel string, body string, id uuid.UUID, repeat *int) string {
+// 予約投稿メッセージ作成時 / 編集時のメッセージを生成
+func CreateSchMesCreatedEditedMessage(parsedTime time.Time, distChannel *string, body string, id uuid.UUID) string {
 	// 空のメッセージを作成
 	var mes string
 
-	// チャンネルと時間を追加
-	mes += fmt.Sprintf(
-		"%s に`%s`、",
-		distChannel,
-		parsedTime.Format(),
+	// チャンネルを追加
+	if distChannel != nil {
+		mes += fmt.Sprintf("%s に", *distChannel)
+	} else {
+		mes += "以前の登録と同じチャンネルに"
+	}
+
+	// 残りの文字列を追加
+	mes += fmt.Sprintf("`%s`、以下の内容を投稿します。\n```plaintext\n%s\n```\n登録を取り消したい場合は次のコマンドを Scheduled Messenger に送信して下さい。\n`!delete -i %s`\n登録したメッセージを編集したい場合は次の Prefix を使って下さい。\n`!edit -i %s`",
+		parsedTime.Format("2006年01月02日 15時04分"),
+		body,
+		id.String(),
+		id.String(),
 	)
+
+	return mes
+}
+
+// 定期投稿メッセージ作成時 / 編集時のメッセージを生成
+func CreateSchMesPeriodicCreatedEditedMessage(parsedTime model.PeriodicTime, distChannel *string, body string, id uuid.UUID, repeat *int) string {
+	// 空のメッセージを作成
+	var mes string
+
+	// チャンネルを追加
+	if distChannel != nil {
+		mes += fmt.Sprintf("%s に", *distChannel)
+	} else {
+		mes += "以前の登録と同じチャンネルに"
+	}
+
+	// チャンネルと時間を追加
+	mes += fmt.Sprintf("`%s`、", parsedTime.Format())
 
 	// リピートの設定がある場合追加
 	if repeat != nil {
@@ -55,8 +70,9 @@ func CreateSchMesPeriodicCreatedMessage(parsedTime model.PeriodicTime, distChann
 
 	// 残りの文字列を追加
 	mes += fmt.Sprintf(
-		"以下の内容を投稿します。\n```plaintext\n%s\n```\n登録を取り消したい場合は次のコマンドを Scheduled Messenger に送信して下さい。\n`!delete -i %s`",
+		"以下の内容を投稿します。\n```plaintext\n%s\n```\n登録を取り消したい場合は次のコマンドを Scheduled Messenger に送信して下さい。\n`!delete -i %s`\n登録したメッセージを編集したい場合は次の Prefix を使って下さい。\n`!edit -i %s`",
 		body,
+		id.String(),
 		id.String(),
 	)
 

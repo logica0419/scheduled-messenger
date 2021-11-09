@@ -12,6 +12,23 @@ import (
 
 var ErrUserNotMatch = fmt.Errorf("access from different user")
 
+// 予約投稿メッセージを DB から取得
+func GetSchMesByID(repo repository.Repository, mesID string) (*model.SchMes, error) {
+	// ID を UUID に変換
+	mesUUID, err := uuid.Parse(mesID)
+	if err != nil {
+		return nil, err
+	}
+
+	// 指定された ID のレコードを取得
+	mes, err := repo.GetSchMesByID(mesUUID)
+	if err != nil {
+		return nil, err
+	}
+
+	return mes, nil
+}
+
 // 新たな予約投稿メッセージを生成し、DB に登録
 func ResisterSchMes(repo repository.Repository, userID string, time time.Time, channelID string, body string) (*model.SchMes, error) {
 	// チャンネル ID を UUID に変換
@@ -79,4 +96,37 @@ func DeleteSchMesByID(repo repository.Repository, api *api.API, mesID string, us
 	}
 
 	return nil
+}
+
+// 定期投稿メッセージを更新
+func UpdateSchMes(repo repository.Repository, ID string, time *time.Time, channelID *string, body *string) (*model.SchMes, error) {
+	// 指定された ID のレコードを取得
+	schMes, err := GetSchMesByID(repo, ID)
+	if err != nil {
+		return nil, err
+	}
+
+	// 各フィールドを更新する
+	if time != nil {
+		schMes.Time = *time
+	}
+	if channelID != nil {
+		// チャンネル ID を UUID に変換
+		channelUUID, err := uuid.Parse(*channelID)
+		if err != nil {
+			return nil, err
+		}
+		schMes.ChannelID = channelUUID
+	}
+	if body != nil {
+		schMes.Body = *body
+	}
+
+	// DB を更新
+	err = repo.UpdateSchMes(schMes)
+	if err != nil {
+		return nil, err
+	}
+
+	return schMes, nil
 }

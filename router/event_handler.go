@@ -90,6 +90,9 @@ func messageEventHandler(c echo.Context, api *api.API, repo repository.Repositor
 			case commands["schedule"]:
 				return scheduleHandler(c, api, repo, req)
 
+			case commands["edit"]:
+				return editHandler(c, api, repo, req)
+
 			case commands["delete"]:
 				return deleteHandler(c, api, repo, req)
 

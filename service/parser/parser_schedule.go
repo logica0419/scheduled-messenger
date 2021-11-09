@@ -102,7 +102,7 @@ func ParseScheduleCommand(req *event.MessageEvent) (*string, *string, *string, *
 
 		// embedded に ID が見つからなかった場合、エラーメッセージを送信
 		if distChannelID == nil {
-			return nil, nil, nil, nil, nil, fmt.Errorf("無効なチャンネルです")
+			return nil, nil, nil, nil, nil, fmt.Errorf("無効なチャンネルです\n")
 		}
 	}
 
