@@ -21,4 +21,7 @@ type SchMesPeriodicRepository interface {
 
 	// 指定された ID の定期投稿メッセージのレコードを削除
 	DeleteSchMesPeriodicByID(mesID uuid.UUID) error
+
+	// 定期投稿メッセージのレコードを更新
+	UpdateSchMesPeriodic(schMesPeriodic *model.SchMesPeriodic) error
 }

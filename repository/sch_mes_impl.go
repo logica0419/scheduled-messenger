@@ -67,7 +67,7 @@ func (repo *GormRepository) DeleteSchMesByID(mesID uuid.UUID) error {
 		ID: mesID,
 	}
 
-	// 指定された ID のレコードを削除
+	// レコードを削除
 	res := repo.getTx().Delete(&schMes)
 	if res.Error != nil {
 		return res.Error
