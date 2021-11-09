@@ -14,13 +14,13 @@ func argparseEditCommand(command []string) (*string, *string, *string, *string, 
 	parser := argparse.NewParser("edit", "メッセージを編集する")
 
 	// argumentを定義
-	id := parser.String("i", "id", &argparse.Options{Required: true, Help: "編集するメッセージのID"})
+	id := parser.String("i", "id", &argparse.Options{Required: true, Help: "編集したいメッセージのID"})
 	channel := parser.String("c", "channel", &argparse.Options{Help: "メッセージを送るチャンネル \"#\"からフルパスを記述してください"})
 	postTime := parser.String("t", "time", &argparse.Options{
 		Help: "メッセージを送る時間 予約投稿フォーマット:`yyyy/mm/dd/hh:mm` 定期投稿フォーマット:`yyyy/mm/dd/hh:mm/d(曜日)` 曜日はオプションです。曜日は0が日曜、6が土曜に対応する1桁の整数で記入して下さい"})
 	body := parser.String("b", "body", &argparse.Options{
 		Help: "送るメッセージ スペースが入るときは\"\"や''でくくって下さい 予約メッセージではメンションせずにbodyにメンションを入れたい場合、\"@.{id}\"と打てば自動で\"@{id}\"に変換されます 改行したい場合は、\"\"や''でくくった上で改行したい箇所に \\n を挿入して下さい"})
-	repeat := parser.Int("r", "repeat", &argparse.Options{Help: "(定期投稿のみ) 投稿を繰り返す回数 1以上の回数を指定してください -1で繰り返しを取り消します"})
+	repeat := parser.Int("r", "repeat", &argparse.Options{Help: "(定期投稿のみ) 投稿を繰り返す回数 1以上の回数を指定してください -1で回数指定が削除され、無限に繰り返すようになります"})
 	parser.DisableHelp()
 
 	// パース
