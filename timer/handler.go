@@ -67,7 +67,7 @@ func (t *Timer) schMesHandler() {
 
 	// 全 routine の終了を待機し、ログを表示
 	wg.Wait()
-	log.Printf("Log: %s %d個の予約投稿メッセージが正常に送信されました", currentTime.Format("01/02 15:04"), sentMes)
+	log.Printf("Log: %d個の予約投稿メッセージが正常に送信されました", sentMes)
 }
 
 // 定期投稿ハンドラ
@@ -141,7 +141,7 @@ func (t *Timer) schMesPeriodicHandler() {
 
 	// 全 routine の終了を待機し、ログを表示
 	wg.Wait()
-	log.Printf("Log: %s %d個の定期投稿メッセージが正常に送信されました", currentTime.Format("01/02 15:04"), sentMes)
+	log.Printf("Log: %d個の定期投稿メッセージが正常に送信されました", sentMes)
 }
 
 func filterSchMesPeriodicByTime(mesList []*model.SchMesPeriodic, currentTime time.Time) []*model.SchMesPeriodic {
