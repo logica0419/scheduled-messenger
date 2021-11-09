@@ -15,15 +15,6 @@ type Timer struct {
 	repo repository.Repository
 }
 
-// 定期実行関数構造体
-type timerFunc struct {
-	schedule string
-	handler  func()
-}
-
-// 定期実行関数リスト
-var timerFuncs []timerFunc
-
 // メッセージ送信タイマーのセットアップと取得
 func Setup(c *config.Config, api *api.API, repo repository.Repository) (*Timer, error) {
 	// cron インスタンスを取得
@@ -43,15 +34,16 @@ func Setup(c *config.Config, api *api.API, repo repository.Repository) (*Timer, 
 
 // 定期実行関数をタイマーに追加
 func (t *Timer) addFuncs() error {
-	// 通常の予約投稿ハンドラを追加
-	timerFuncs = append(timerFuncs, timerFunc{schedule: "* * * * *", handler: t.normalMesHandler})
+	// 予約投稿ハンドラを追加
+	_, err := t.cron.AddFunc("* * * * *", t.schMesHandler)
+	if err != nil {
+		return err
+	}
 
-	// timerFuncs に登録された関数を全て追加
-	for _, v := range timerFuncs {
-		_, err := t.cron.AddFunc(v.schedule, v.handler)
-		if err != nil {
-			return err
-		}
+	// 定期投稿ハンドラを追加
+	_, err = t.cron.AddFunc("* * * * *", t.schMesPeriodicHandler)
+	if err != nil {
+		return err
 	}
 
 	return nil

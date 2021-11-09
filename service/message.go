@@ -124,6 +124,6 @@ func formatRepeat(repeat *int) string {
 }
 
 // DB のレコードから実際に送るメッセージを生成
-func CreateScheduledMessage(mes *model.SchMes) string {
-	return fmt.Sprintf("#### *@%s さんからのメッセージ*\n---\n%s", mes.UserID, mes.Body)
+func CreateScheduledMessage(userID string, body string) string {
+	return fmt.Sprintf("#### *@%s さんからのメッセージ*\n---\n%s", userID, body)
 }

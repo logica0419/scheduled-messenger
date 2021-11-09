@@ -2,6 +2,7 @@ package model
 
 import (
 	"fmt"
+	"time"
 
 	"github.com/google/uuid"
 )
@@ -71,4 +72,44 @@ func (time PeriodicTime) Format() string {
 	}
 
 	return mes
+}
+
+// 与えられた時間が定期投稿メッセージのスケジュールにマッチするか判定
+func (schedule PeriodicTime) Matches(t time.Time) bool {
+	// 月
+	if schedule.Month != nil {
+		if t.Month() != time.Month(*schedule.Month) {
+			return false
+		}
+	}
+
+	// 日
+	if schedule.Date != nil {
+		if t.Day() != *schedule.Date {
+			return false
+		}
+	}
+
+	// 時
+	if schedule.Hour != nil {
+		if t.Hour() != *schedule.Hour {
+			return false
+		}
+	}
+
+	// 分
+	if schedule.Minute != nil {
+		if t.Minute() != *schedule.Minute {
+			return false
+		}
+	}
+
+	// 曜日
+	if schedule.Day != nil {
+		if t.Weekday() != time.Weekday(*schedule.Day) {
+			return false
+		}
+	}
+
+	return true
 }

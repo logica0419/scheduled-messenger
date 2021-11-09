@@ -7,6 +7,9 @@ import (
 
 // 定期投稿テーブル操作リポジトリ
 type SchMesPeriodicRepository interface {
+	// 定期投稿メッセージを全取得
+	GetSchMesPeriodicAll() ([]*model.SchMesPeriodic, error)
+
 	// 指定された ID の定期投稿メッセージのレコードを取得
 	GetSchMesPeriodicByID(mesID uuid.UUID) (*model.SchMesPeriodic, error)
 

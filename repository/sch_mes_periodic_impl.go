@@ -5,6 +5,20 @@ import (
 	"github.com/logica0419/scheduled-messenger-bot/model"
 )
 
+// 定期投稿メッセージを全取得
+func (repo *GormRepository) GetSchMesPeriodicAll() ([]*model.SchMesPeriodic, error) {
+	// 空のメッセージ構造体の変数を作成
+	var schMesPeriodic []*model.SchMesPeriodic
+
+	// レコードを取得
+	res := repo.getTx().Find(&schMesPeriodic)
+	if res.Error != nil {
+		return nil, res.Error
+	}
+
+	return schMesPeriodic, nil
+}
+
 // 指定された ID の定期投稿メッセージのレコードを取得
 func (repo *GormRepository) GetSchMesPeriodicByID(mesID uuid.UUID) (*model.SchMesPeriodic, error) {
 	// 空のメッセージ構造体の変数を作成
