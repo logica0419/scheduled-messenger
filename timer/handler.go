@@ -51,17 +51,19 @@ func (t *Timer) schMesHandler() {
 			// エラーが起きたらログを config で指定したチャンネルに送信
 			if err != nil {
 				_ = t.api.SendMessage(t.c.Log_Chan_ID, fmt.Sprintf("ErrorLog: %s メッセージの送信に失敗しました\n```\nID: %s\nError: %s\n```", currentTime.Format("01/02 15:04"), mes.ID, err.Error()))
-			} else {
-				// 送った ID のメッセージを DB から削除
-				err = t.repo.DeleteSchMesByID(mes.ID)
-				// エラーが起きたらログを config で指定したチャンネルに送信
-				if err != nil {
-					_ = t.api.SendMessage(t.c.Log_Chan_ID, fmt.Sprintf("ErrorLog: %s レコードの削除に失敗しました\n```\nID: %s\nError: %s\n```", currentTime.Format("01/02 15:04"), mes.ID, err.Error()))
-				} else {
-					// メッセージカウントを 1 足す
-					sentMes++
-				}
+				return
 			}
+
+			// 送った ID のメッセージを DB から削除
+			err = t.repo.DeleteSchMesByID(mes.ID)
+			// エラーが起きたらログを config で指定したチャンネルに送信
+			if err != nil {
+				_ = t.api.SendMessage(t.c.Log_Chan_ID, fmt.Sprintf("ErrorLog: %s レコードの削除に失敗しました\n```\nID: %s\nError: %s\n```", currentTime.Format("01/02 15:04"), mes.ID, err.Error()))
+				return
+			}
+
+			// メッセージカウントを 1 足す
+			sentMes++
 		}(v)
 	}
 
@@ -120,16 +122,20 @@ func (t *Timer) schMesPeriodicHandler() {
 			// リピートの項目がある場合、回数を一回減らす
 			if mes.Repeat != nil {
 				repeat := *mes.Repeat - 1
-				err = t.repo.UpdateSchMesPeriodic(&model.SchMesPeriodic{ID: mes.ID, Repeat: &repeat})
-				if err != nil {
-					_ = t.api.SendMessage(t.c.Log_Chan_ID, fmt.Sprintf("ErrorLog: %s レコードの更新に失敗しました\n```\nID: %s\nError: %s\n```", currentTime.Format("01/02 15:04"), mes.ID, err.Error()))
-				}
 
 				// 回数が 0 になったら、DB から削除
 				if repeat == 0 {
 					err = t.repo.DeleteSchMesPeriodicByID(mes.ID)
 					if err != nil {
 						_ = t.api.SendMessage(t.c.Log_Chan_ID, fmt.Sprintf("ErrorLog: %s レコードの削除に失敗しました\n```\nID: %s\nError: %s\n```", currentTime.Format("01/02 15:04"), mes.ID, err.Error()))
+						return
+					}
+				} else {
+					// そうでなければレコードをを更新
+					err = t.repo.UpdateSchMesPeriodic(&model.SchMesPeriodic{ID: mes.ID, Repeat: &repeat})
+					if err != nil {
+						_ = t.api.SendMessage(t.c.Log_Chan_ID, fmt.Sprintf("ErrorLog: %s レコードの更新に失敗しました\n```\nID: %s\nError: %s\n```", currentTime.Format("01/02 15:04"), mes.ID, err.Error()))
+						return
 					}
 				}
 			}
