@@ -41,13 +41,9 @@ func helpHandler(c echo.Context, api *api.API, req *event.MessageEvent) error {
 // schedule コマンドハンドラー
 func scheduleHandler(c echo.Context, api *api.API, repo repository.Repository, req *event.MessageEvent) error {
 	// メッセージをパースし、要素を取得
-	time, distChannel, distChannelID, body, repeat, err := parser.ParseScheduleCommand(api, req)
+	time, distChannel, distChannelID, body, repeat, err := parser.ParseScheduleCommand(req)
 	if err != nil {
-		// Argv パース以外のところでエラーを吐いたらメッセージを送信
-		_err := err
-		if !errors.As(fmt.Errorf("failed to parse argv"), &_err) {
-			service.SendCreateErrorMessage(api, req.GetChannelID(), fmt.Errorf("メッセージをパースできません\n%s", err))
-		}
+		service.SendCreateErrorMessage(api, req.GetChannelID(), fmt.Errorf("メッセージをパースできません\n%s", err))
 		return c.JSON(http.StatusBadRequest, errorMessage{Message: err.Error()})
 	}
 
@@ -109,7 +105,7 @@ func scheduleHandler(c echo.Context, api *api.API, repo repository.Repository, r
 //delete コマンドハンドラー
 func deleteHandler(c echo.Context, api *api.API, repo repository.Repository, req *event.MessageEvent) error {
 	// メッセージをパースし、要素を取得
-	id, err := parser.ParseDeleteCommand(api, req)
+	id, err := parser.ParseDeleteCommand(req)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, errorMessage{Message: err.Error()})
 	}

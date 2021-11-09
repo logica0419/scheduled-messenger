@@ -6,7 +6,6 @@ import (
 
 	"github.com/akamensky/argparse"
 	"github.com/logica0419/scheduled-messenger-bot/model/event"
-	"github.com/logica0419/scheduled-messenger-bot/service/api"
 )
 
 // 予約削除コマンドから ID を抽出
@@ -28,7 +27,7 @@ func argparseDeleteCommand(command []string) (*string, error) {
 }
 
 // 予約削除コマンドをパース
-func ParseDeleteCommand(api *api.API, req *event.MessageEvent) (*string, error) {
+func ParseDeleteCommand(req *event.MessageEvent) (*string, error) {
 	// メッセージを配列に
 	listedReqMes, err := argvParse(req.GetText())
 	if err != nil {
@@ -43,7 +42,6 @@ func ParseDeleteCommand(api *api.API, req *event.MessageEvent) (*string, error) 
 	// メッセージをパース
 	id, err := argparseDeleteCommand(listedReqMes)
 	if err != nil {
-		_ = api.SendMessage(req.GetChannelID(), err.Error())
 		return nil, fmt.Errorf("failed to parse argv: %s", err)
 	}
 

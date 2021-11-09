@@ -7,7 +7,6 @@ import (
 	"github.com/akamensky/argparse"
 	"github.com/cosiner/argv"
 	"github.com/logica0419/scheduled-messenger-bot/model/event"
-	"github.com/logica0419/scheduled-messenger-bot/service/api"
 )
 
 // プレーンテキストのメッセージを配列に分解
@@ -67,7 +66,7 @@ func bodyParse(body *string) *string {
 }
 
 // 予約作成コマンドをパース
-func ParseScheduleCommand(api *api.API, req *event.MessageEvent) (*string, *string, *string, *string, *int, error) {
+func ParseScheduleCommand(req *event.MessageEvent) (*string, *string, *string, *string, *int, error) {
 	// メッセージを配列に
 	listedReqMes, err := argvParse(req.GetText())
 	if err != nil {
@@ -82,7 +81,6 @@ func ParseScheduleCommand(api *api.API, req *event.MessageEvent) (*string, *stri
 	// メッセージをパース
 	parsedTime, distChannel, body, repeat, err := argparseScheduleCommand(listedReqMes)
 	if err != nil {
-		_ = api.SendMessage(req.GetChannelID(), err.Error())
 		return nil, nil, nil, nil, nil, err
 	}
 
