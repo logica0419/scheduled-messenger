@@ -1,7 +1,7 @@
 # Scheduled-Messenger
 
-![Deploy](https://github.com/logica0419/scheduled-messenger/actions/workflows/main.yml/badge.svg)
-![CodeQL](https://github.com/logica0419/scheduled-messenger/actions/workflows/codeql-analysis.yml/badge.svg)  
+[![Deploy](https://github.com/logica0419/scheduled-messenger/actions/workflows/main.yml/badge.svg)](https://github.com/logica0419/scheduled-messenger/actions/workflows/main.yml)
+[![CodeQL](https://github.com/logica0419/scheduled-messenger/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/logica0419/scheduled-messenger/actions/workflows/codeql-analysis.yml)  
 指定された時間・指定されたチャンネルに指定されたメッセージを送る traQ Bot
 
 ## 環境変数
