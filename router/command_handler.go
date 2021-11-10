@@ -20,7 +20,7 @@ import (
 
 // コマンド一覧
 var commands = map[string]string{
-	"help":     "help",      // ヘルプを表示する
+	"help":     "!help",     // ヘルプを表示する
 	"schedule": "!schedule", // 予約メッセージを作成する
 	"edit":     "!edit",     // 予約メッセージを編集する
 	"delete":   "!delete",   // 予約メッセージを削除する
