@@ -20,7 +20,7 @@ func argparseDeleteCommand(command []string) (*string, error) {
 	// パース
 	err := parser.Parse(command)
 	if err != nil {
-		return nil, fmt.Errorf("メッセージの削除に失敗しました\n```plaintext\n%s```", parser.Usage(err))
+		return nil, fmt.Errorf(parser.Usage(err))
 	}
 
 	return id, nil
@@ -42,7 +42,7 @@ func ParseDeleteCommand(req *event.MessageEvent) (*string, error) {
 	// メッセージをパース
 	id, err := argparseDeleteCommand(listedReqMes)
 	if err != nil {
-		return nil, fmt.Errorf("failed to parse argv: %s", err)
+		return nil, err
 	}
 
 	return id, err

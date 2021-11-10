@@ -216,7 +216,7 @@ func deleteHandler(c echo.Context, api *api.API, repo repository.Repository, req
 	// メッセージをパースし、要素を取得
 	id, err := parser.ParseDeleteCommand(req)
 	if err != nil {
-		service.SendCreateErrorMessage(api, req.GetChannelID(), fmt.Errorf("メッセージをパースできません\n%s", err))
+		service.SendDeleteErrorMessage(api, req.GetChannelID(), fmt.Errorf("メッセージをパースできません\n%s", err))
 		return c.JSON(http.StatusBadRequest, errorMessage{Message: err.Error()})
 	}
 
