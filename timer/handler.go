@@ -151,14 +151,13 @@ func (t *Timer) schMesPeriodicHandler() {
 }
 
 // 定期投稿メッセージを時間でフィルター
-func filterSchMesPeriodicByTime(mesList []*model.SchMesPeriodic, currentTime time.Time) []*model.SchMesPeriodic {
+func filterSchMesPeriodicByTime(mesList []*model.SchMesPeriodic, t time.Time) []*model.SchMesPeriodic {
 	// フィルター済みのメッセージリスト格納用変数
 	filtered := []*model.SchMesPeriodic{}
 
 	// 個々のメッセージに対して現在時刻が表現にマッチするか調べ、マッチしたらフィルター済みリストに追加
 	for _, v := range mesList {
-		matches := v.Time.Matches(currentTime)
-		if matches {
+		if v.Time.Matches(t) {
 			filtered = append(filtered, v)
 		}
 	}
