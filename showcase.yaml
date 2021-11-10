@@ -1,5 +1,6 @@
 type: "runtime"
 use_mariadb: true
+startup: go mod download
 entrypoint: go run ./*.go
 http_proxy: 8080
 branch:
