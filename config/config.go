@@ -36,15 +36,15 @@ func GetConfig() (*Config, error) {
 	// 環境変数の読み込み
 	viper.AutomaticEnv()
 
-	// .envファイルの読み込み
+	// config.json ファイルの読み込み
 	viper.AddConfigPath(".")
 	viper.SetConfigName("config")
 	viper.SetConfigType("json")
 	if err := viper.ReadInConfig(); err != nil {
 		if _, ok := err.(viper.ConfigFileNotFoundError); ok {
-			log.Print("Unable to find config file, default settings or environmental variables are to be used.")
+			log.Print("Unable to find config.json, default settings or environmental variables are to be used.")
 		} else {
-			return nil, fmt.Errorf("Error: failed to load .env file - %s ", err)
+			return nil, fmt.Errorf("Error: failed to load config.json - %s ", err)
 		}
 	}
 
@@ -54,7 +54,7 @@ func GetConfig() (*Config, error) {
 	// 設定格納用変数に設定を移す
 	err := viper.Unmarshal(&c)
 	if err != nil {
-		return nil, fmt.Errorf("Error: failed to unmarshal config - %s ", err)
+		return nil, fmt.Errorf("Error: failed to parse configs - %s ", err)
 	}
 
 	return c, nil

@@ -30,7 +30,7 @@ func main() {
 	// 設定を読み込む
 	c, err := config.GetConfig()
 	if err != nil {
-		log.Panicf("Error: failed to get config - %s", err)
+		log.Panicf("Error: failed to get configs - %s", err)
 	}
 
 	// API クライアントを取得
