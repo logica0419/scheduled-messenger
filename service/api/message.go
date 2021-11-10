@@ -33,3 +33,8 @@ func (api *API) SendMessage(chanID string, message string) error {
 		return nil
 	}
 }
+
+// デプロイ完了を config で設定したチャンネルに通知
+func (api *API) NotifyDeployed() {
+	_ = api.SendMessage(api.config.Log_Chan_ID, "Log: The new version of Scheduled Messenger is deployed.")
+}

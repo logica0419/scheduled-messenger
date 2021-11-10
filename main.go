@@ -54,6 +54,9 @@ func main() {
 	// ルーターをセットアップ
 	r := router.Setup(c, api, repo)
 
+	// デプロイ完了を通知
+	api.NotifyDeployed()
+
 	// ルーターをスタート
 	r.Start()
 }
