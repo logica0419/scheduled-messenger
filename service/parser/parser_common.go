@@ -74,7 +74,25 @@ func TimeParsePeriodic(t *string) ([]*model.PeriodicTime, error) {
 	timeArrs := [][]string{}
 	if len(timeArr) == 5 {
 		days := strings.Split(timeArr[4], "&")
-		// & で区切られた曜日ごとに time を作成し追加
+
+		// 曜日の被りを検出
+		overlap := false
+		m := map[string]bool{}
+		for _, day := range days {
+			if m[day] {
+				overlap = true
+				break
+			} else {
+				m[day] = true
+			}
+		}
+
+		// 曜日がかぶっているか個数が不正だったらエラーを返す
+		if len(days) >= 7 || len(days) < 1 || overlap {
+			return nil, fmt.Errorf("曜日の指定が正しくありません\n被りがあるか、全曜日が指定されています")
+		}
+
+		// & で区切られた曜日ごとに timeArr を作成し追加
 		for _, day := range days {
 			_timeArr := []string{timeArr[0], timeArr[1], timeArr[2], timeArr[3], day}
 			timeArrs = append(timeArrs, _timeArr)
