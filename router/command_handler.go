@@ -55,21 +55,29 @@ func scheduleHandler(c echo.Context, api *api.API, repo repository.Repository, r
 	// 時間の表記にワイルドカードが含まれているかで処理を分岐
 	if strings.Contains(*time, "*") { // 定期投稿
 		// 時間をパース
-		parsedTime, err := parser.TimeParsePeriodic(time)
+		parsedTimes, err := parser.TimeParsePeriodic(time)
 		if err != nil {
 			service.SendCreateErrorMessage(api, req.GetChannelID(), fmt.Errorf("無効な時間表記です\n%s\n", err))
 			return c.JSON(http.StatusBadRequest, errorMessage{Message: err.Error()})
 		}
 
-		// 定期投稿メッセージをDB に 登録
-		schMesPeriodic, err := service.ResisterSchMesPeriodic(repo, req.GetUserID(), *parsedTime, *distChannelID, *body, repeat)
-		if err != nil {
-			service.SendCreateErrorMessage(api, req.GetChannelID(), fmt.Errorf("DB エラーです\n%s\n", err))
-			return c.JSON(http.StatusInternalServerError, errorMessage{Message: err.Error()})
-		}
+		for _, parsedTime := range parsedTimes {
+			// 定期投稿メッセージをDB に 登録
+			schMesPeriodic, err := service.ResisterSchMesPeriodic(repo, req.GetUserID(), *parsedTime, *distChannelID, *body, repeat)
+			if err != nil {
+				service.SendCreateErrorMessage(api, req.GetChannelID(), fmt.Errorf("DB エラーです\n%s\n", err))
+				return c.JSON(http.StatusInternalServerError, errorMessage{Message: err.Error()})
+			}
 
-		// 確認メッセージを生成
-		confirmMes = service.CreateSchMesPeriodicCreatedEditedMessage(schMesPeriodic.Time, distChannel, schMesPeriodic.Body, schMesPeriodic.ID, schMesPeriodic.Repeat)
+			// 確認メッセージを生成
+			confirmMes = service.CreateSchMesPeriodicCreatedEditedMessage(schMesPeriodic.Time, distChannel, schMesPeriodic.Body, schMesPeriodic.ID, schMesPeriodic.Repeat)
+
+			// 確認メッセージを送信
+			err = api.SendMessage(req.GetChannelID(), confirmMes)
+			if err != nil {
+				return c.JSON(http.StatusInternalServerError, errorMessage{Message: fmt.Sprintf("failed to send message: %s", err)})
+			}
+		}
 
 	} else { // 予約投稿
 		// repeat が入力されていたらエラーメッセージを送る
@@ -94,12 +102,12 @@ func scheduleHandler(c echo.Context, api *api.API, repo repository.Repository, r
 
 		// 確認メッセージを生成
 		confirmMes = service.CreateSchMesCreatedEditedMessage(schMes.Time, distChannel, schMes.Body, schMes.ID)
-	}
 
-	// 確認メッセージを送信
-	err = api.SendMessage(req.GetChannelID(), confirmMes)
-	if err != nil {
-		return c.JSON(http.StatusInternalServerError, errorMessage{Message: fmt.Sprintf("failed to send message: %s", err)})
+		// 確認メッセージを送信
+		err = api.SendMessage(req.GetChannelID(), confirmMes)
+		if err != nil {
+			return c.JSON(http.StatusInternalServerError, errorMessage{Message: fmt.Sprintf("failed to send message: %s", err)})
+		}
 	}
 
 	return c.NoContent(http.StatusNoContent)
@@ -157,11 +165,18 @@ func editHandler(c echo.Context, api *api.API, repo repository.Repository, req *
 		var parsedTime *model.PeriodicTime
 		// 時間が nil でなければパース
 		if postTime != nil {
-			parsedTime, err = parser.TimeParsePeriodic(postTime)
+			parsedTimes, err := parser.TimeParsePeriodic(postTime)
 			if err != nil {
 				service.SendEditErrorMessage(api, req.GetChannelID(), fmt.Errorf("無効な時間表記です\n%s\n", err))
 				return c.JSON(http.StatusBadRequest, errorMessage{Message: err.Error()})
 			}
+			// 曜日は複数指定されていたらエラーメッセージを送信
+			if len(parsedTimes) > 1 {
+				service.SendEditErrorMessage(api, req.GetChannelID(), fmt.Errorf("無効な時間表記です\n編集で複数の曜日を指定することはできません\n"))
+				return c.JSON(http.StatusBadRequest, errorMessage{Message: "編集で複数の曜日を指定することはできません"})
+			}
+
+			parsedTime = parsedTimes[0]
 		}
 
 		// 定期投稿メッセージを更新

@@ -53,7 +53,7 @@ func TimeParse(t *string) (*time.Time, error) {
 }
 
 // 記入された時間を定期投稿の time に変換
-func TimeParsePeriodic(t *string) (*model.PeriodicTime, error) {
+func TimeParsePeriodic(t *string) ([]*model.PeriodicTime, error) {
 	// スラッシュとコロンで区切る
 	timeArr := regexp.MustCompile("[/:]").Split(*t, -1)
 
@@ -70,69 +70,91 @@ func TimeParsePeriodic(t *string) (*model.PeriodicTime, error) {
 	// 年をドロップ
 	timeArr = timeArr[1:]
 
-	// 定期投稿の time を作成
-	parsedTime := &model.PeriodicTime{}
-	for i := range timeArr {
-		// ワイルドカードの時は何もしない (その項目は何も代入されないのでポインターが nil になる)
-		if timeArr[i] != "*" {
-			// 値を数値に変換
-			intTime, err := strconv.Atoi(timeArr[i])
-			if err != nil {
-				return nil, fmt.Errorf("時間の数値変換ができません\n%s", err)
-			}
+	// 曜日が存在したら区切って、それぞれに対して timeArr を作る
+	timeArrs := [][]string{}
+	if len(timeArr) == 5 {
+		days := strings.Split(timeArr[4], "&")
+		// & で区切られた曜日ごとに time を作成し追加
+		for _, day := range days {
+			_timeArr := []string{timeArr[0], timeArr[1], timeArr[2], timeArr[3], day}
+			timeArrs = append(timeArrs, _timeArr)
+		}
+	} else {
+		// 曜日が存在しなければそのまま追加
+		timeArrs = append(timeArrs, timeArr)
+	}
 
-			// 項目ごとに Validation と代入
-			switch i {
-			case 0: // 月
-				if intTime < 1 || intTime > 12 {
-					return nil, fmt.Errorf("有効な月ではありません")
+	// 定期投稿の time の配列
+	parsedTimes := []*model.PeriodicTime{}
+
+	for _, timeArr := range timeArrs {
+		// 定期投稿の time を作成
+		parsedTime := &model.PeriodicTime{}
+		for i := range timeArr {
+			// ワイルドカードの時は何もしない (その項目は何も代入されないのでポインターが nil になる)
+			if timeArr[i] != "*" {
+				// 値を数値に変換
+				intTime, err := strconv.Atoi(timeArr[i])
+				if err != nil {
+					return nil, fmt.Errorf("時間の数値変換ができません\n%s", err)
 				}
-				parsedTime.Month = &intTime
 
-			case 1: // 日付
-				// 月ごとに上限の日付が違うので月によって Validation を変更
-				if parsedTime.Month == nil { // 月が nil だった (月の指定がない) 場合
-					if intTime < 1 || intTime > 31 {
-						return nil, fmt.Errorf("有効な日付ではありません")
+				// 項目ごとに Validation と代入
+				switch i {
+				case 0: // 月
+					if intTime < 1 || intTime > 12 {
+						return nil, fmt.Errorf("有効な月ではありません")
 					}
-				} else {
-					switch *parsedTime.Month {
-					case 1, 3, 5, 7, 8, 10, 12: // 31 日まである月
+					parsedTime.Month = &intTime
+
+				case 1: // 日付
+					// 月ごとに上限の日付が違うので月によって Validation を変更
+					if parsedTime.Month == nil { // 月が nil だった (月の指定がない) 場合
 						if intTime < 1 || intTime > 31 {
 							return nil, fmt.Errorf("有効な日付ではありません")
 						}
-					case 4, 6, 9, 11: // 30 日まである月
-						if intTime < 1 || intTime > 30 {
-							return nil, fmt.Errorf("有効な日付ではありません")
-						}
-					case 2: // 29 日まである月
-						if intTime < 1 || intTime > 29 {
-							return nil, fmt.Errorf("有効な日付ではありません")
+					} else {
+						switch *parsedTime.Month {
+						case 1, 3, 5, 7, 8, 10, 12: // 31 日まである月
+							if intTime < 1 || intTime > 31 {
+								return nil, fmt.Errorf("有効な日付ではありません")
+							}
+						case 4, 6, 9, 11: // 30 日まである月
+							if intTime < 1 || intTime > 30 {
+								return nil, fmt.Errorf("有効な日付ではありません")
+							}
+						case 2: // 29 日まである月
+							if intTime < 1 || intTime > 29 {
+								return nil, fmt.Errorf("有効な日付ではありません")
+							}
 						}
 					}
-				}
-				parsedTime.Date = &intTime
+					parsedTime.Date = &intTime
 
-			case 2: // 時間
-				if intTime < 0 || intTime > 23 {
-					return nil, fmt.Errorf("有効な時刻ではありません")
-				}
-				parsedTime.Hour = &intTime
+				case 2: // 時間
+					if intTime < 0 || intTime > 23 {
+						return nil, fmt.Errorf("有効な時刻ではありません")
+					}
+					parsedTime.Hour = &intTime
 
-			case 3: // 分
-				if intTime < 0 || intTime > 59 {
-					return nil, fmt.Errorf("有効な時刻ではありません")
-				}
-				parsedTime.Minute = &intTime
+				case 3: // 分
+					if intTime < 0 || intTime > 59 {
+						return nil, fmt.Errorf("有効な時刻ではありません")
+					}
+					parsedTime.Minute = &intTime
 
-			case 4: // 曜日 (Optional)
-				if intTime < 0 || intTime > 6 {
-					return nil, fmt.Errorf("有効な曜日ではありません")
+				case 4: // 曜日 (Optional)
+					if intTime < 0 || intTime > 6 {
+						return nil, fmt.Errorf("有効な曜日ではありません")
+					}
+					parsedTime.Day = &intTime
 				}
-				parsedTime.Day = &intTime
 			}
 		}
+
+		// 配列に追加
+		parsedTimes = append(parsedTimes, parsedTime)
 	}
 
-	return parsedTime, nil
+	return parsedTimes, nil
 }
