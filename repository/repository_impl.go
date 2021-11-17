@@ -2,12 +2,14 @@ package repository
 
 import (
 	"github.com/logica0419/scheduled-messenger-bot/model"
+	"github.com/patrickmn/go-cache"
 	"gorm.io/gorm"
 )
 
 // リポジトリ実装
 type GormRepository struct {
 	db *gorm.DB
+	c  *cache.Cache
 }
 
 // 新たなトランザクション用 DB セッションを取得

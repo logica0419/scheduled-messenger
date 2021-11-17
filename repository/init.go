@@ -2,8 +2,10 @@ package repository
 
 import (
 	"fmt"
+	"time"
 
 	"github.com/logica0419/scheduled-messenger-bot/config"
+	"github.com/patrickmn/go-cache"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 )
@@ -16,9 +18,13 @@ func GetRepository(c *config.Config) (Repository, error) {
 		return nil, err
 	}
 
+	// 新規キャッシュを作成
+	cache := cache.New(0, 10*time.Minute)
+
 	// リポジトリを作成して Migration を実行
 	repo := &GormRepository{
 		db: db,
+		c:  cache,
 	}
 	err = repo.migrate()
 	if err != nil {
