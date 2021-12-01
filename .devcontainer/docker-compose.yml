@@ -17,7 +17,7 @@ services:
 
   mariadb:
     container_name: SchMes_mariadb
-    image: mariadb:latest
+    image: mariadb:10.6.5
     environment:
       MYSQL_ROOT_PASSWORD: password
       MYSQL_DATABASE: SchMes

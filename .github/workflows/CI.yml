@@ -1,0 +1,117 @@
+name: CI Pipeline
+
+on:
+  push:
+    branches:
+      - main
+
+env:
+  GO_VERSION: 1.17.3
+
+jobs:
+  vulnerability:
+    name: Vulnerability Scan
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Setup Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: ${{ env.GO_VERSION }}
+      - name: Write Go List
+        run: go list -json -m all > go.list
+      - name: Scan with Nancy
+        uses: sonatype-nexus-community/nancy-github-action@main
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: golangci-lint
+        uses: golangci/golangci-lint-action@v2
+        with:
+          version: latest
+          args: "--timeout 3m0s"
+  mod:
+    name: Module Download
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Setup Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: ${{ env.GO_VERSION }}
+      - name: Set Mod Cache
+        uses: actions/cache@v2.1.6
+        with:
+          path: ~/go/pkg/mod
+          key: mod-${{ hashFiles('**/go.sum') }}
+      - name: Module Download
+        run: go mod download
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    needs: [mod]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Setup Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: ${{ env.GO_VERSION }}
+      - name: Set Mod Cache
+        uses: actions/cache@v2
+        with:
+          path: ~/go/pkg/mod
+          key: mod-${{ hashFiles('**/go.sum') }}
+      - name: Set Build Cache
+        uses: actions/cache@v2
+        with:
+          path: /tmp/go/cache
+          key: build-${{ github.sha }}
+      - name: Build
+        run: go build -o ./sch-mes
+      - uses: actions/upload-artifact@v1
+        with:
+          name: sch-mes
+          path: ./sch-mes
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    needs: [mod, build]
+    services:
+      mariadb:
+        image: mariadb:latest
+        options: --health-cmd="mysqladmin ping" --health-interval=5s --health-timeout=2s --health-retries=3
+        env:
+          MYSQL_ROOT_PASSWORD: password
+          MYSQL_DATABASE: SchMes
+        ports:
+          - 3306:3306
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Setup Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: ${{ env.GO_VERSION }}
+      - name: Set Mod Cache
+        uses: actions/cache@v2
+        with:
+          path: ~/go/pkg/mod
+          key: mod-${{ hashFiles('**/go.sum') }}
+      - name: Set Build Cache
+        uses: actions/cache@v2
+        with:
+          path: /tmp/go/cache
+          key: build-${{ github.sha }}
+      - name: Run Test
+        run: go test ./... -v
+        env:
+          MARIADB_HOSTNAME: 127.0.0.1
+          MARIADB_DATABASE: SchMes
+          MARIADB_USERNAME: root
+          MARIADB_PASSWORD: password
