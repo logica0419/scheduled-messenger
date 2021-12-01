@@ -132,7 +132,15 @@ func (t *Timer) schMesPeriodicHandler() {
 					}
 				} else {
 					// そうでなければレコードをを更新
-					err = t.repo.UpdateSchMesPeriodic(&model.SchMesPeriodic{ID: mes.ID, Repeat: &repeat})
+					err = t.repo.UpdateSchMesPeriodic(
+						&model.SchMesPeriodic{
+							ID:        mes.ID,
+							UserID:    mes.UserID,
+							Time:      mes.Time,
+							Repeat:    &repeat,
+							ChannelID: mes.ChannelID,
+							Body:      mes.Body,
+						})
 					if err != nil {
 						_ = t.api.SendMessage(t.c.Log_Chan_ID, fmt.Sprintf("ErrorLog: %s レコードの更新に失敗しました\n```\nID: %s\nError: %s\n```", currentTime.Format("01/02 15:04"), mes.ID, err.Error()))
 						return
