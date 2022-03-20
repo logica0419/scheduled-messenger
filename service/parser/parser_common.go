@@ -25,14 +25,6 @@ func argvParse(message string) ([]string, error) {
 	return parsed[0], nil
 }
 
-// body から特定のルールにマッチする文字列を変換
-func bodyParse(body *string) *string {
-	// メンションよけのパース (@.{id} を @{id} に変換)
-	replacedBody := strings.Replace(*body, "@.", "@", -1)
-
-	return &replacedBody
-}
-
 // 記入された時間を time.Time に変換
 func TimeParse(t *string) (*time.Time, error) {
 	// 記入フォーマットを定義
