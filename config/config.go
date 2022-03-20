@@ -28,7 +28,7 @@ func GetConfig() (*Config, error) {
 	viper.SetDefault("Verification_Token", "")
 	viper.SetDefault("Bot_Access_Token", "")
 	viper.SetDefault("Log_Chan_ID", "")
-	viper.SetDefault("MariaDB_Hostname", "mariadb")
+	viper.SetDefault("MariaDB_Hostname", "localhost")
 	viper.SetDefault("MariaDB_Database", "SchMes")
 	viper.SetDefault("MariaDB_Username", "root")
 	viper.SetDefault("MariaDB_Password", "password")
