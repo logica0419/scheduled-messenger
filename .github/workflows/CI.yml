@@ -48,7 +48,7 @@ jobs:
         with:
           go-version: ${{ env.GO_VERSION }}
       - name: Set Mod Cache
-        uses: actions/cache@v2.1.6
+        uses: actions/cache@v3.0.9
         with:
           path: ~/go/pkg/mod
           key: mod-${{ hashFiles('**/go.sum') }}
@@ -66,12 +66,12 @@ jobs:
         with:
           go-version: ${{ env.GO_VERSION }}
       - name: Set Mod Cache
-        uses: actions/cache@v2
+        uses: actions/cache@v3.0.9
         with:
           path: ~/go/pkg/mod
           key: mod-${{ hashFiles('**/go.sum') }}
       - name: Set Build Cache
-        uses: actions/cache@v2
+        uses: actions/cache@v3.0.9
         with:
           path: /tmp/go/cache
           key: build-${{ github.sha }}
@@ -102,12 +102,12 @@ jobs:
         with:
           go-version: ${{ env.GO_VERSION }}
       - name: Set Mod Cache
-        uses: actions/cache@v2
+        uses: actions/cache@v3.0.9
         with:
           path: ~/go/pkg/mod
           key: mod-${{ hashFiles('**/go.sum') }}
       - name: Set Build Cache
-        uses: actions/cache@v2
+        uses: actions/cache@v3.0.9
         with:
           path: /tmp/go/cache
           key: build-${{ github.sha }}
