@@ -3,7 +3,7 @@ module github.com/logica0419/scheduled-messenger-bot
 go 1.17
 
 require (
-	github.com/akamensky/argparse v1.3.1
+	github.com/akamensky/argparse v1.4.0
 	github.com/cosiner/argv v0.1.0
 	github.com/google/uuid v1.3.0
 	github.com/labstack/echo/v4 v4.9.0
