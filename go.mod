@@ -7,7 +7,7 @@ require (
 	github.com/cosiner/argv v0.1.0
 	github.com/google/uuid v1.3.0
 	github.com/labstack/echo/v4 v4.9.0
-	github.com/labstack/gommon v0.3.1
+	github.com/labstack/gommon v0.4.0
 	github.com/patrickmn/go-cache v2.1.0+incompatible
 	github.com/robfig/cron/v3 v3.0.1
 	github.com/spf13/viper v1.13.0
