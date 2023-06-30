@@ -58,7 +58,7 @@ jobs:
     services:
       mariadb:
         image: mariadb:latest
-        options: --health-cmd="mysqladmin ping" --health-interval=5s --health-timeout=2s --health-retries=3
+        options: --health-cmd="mariadb-admin ping" --health-interval=5s --health-timeout=2s --health-retries=3
         env:
           MYSQL_ROOT_PASSWORD: password
           MYSQL_DATABASE: SchMes
