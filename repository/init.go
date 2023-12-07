@@ -39,7 +39,7 @@ func getDB(c *config.Config) (*gorm.DB, error) {
 	// DSN を生成
 	dsn := fmt.Sprintf(
 		"%s:%s@tcp(%s:3306)/%s?charset=utf8mb4&parseTime=True&loc=Local",
-		c.NS_MariaDB_Username,
+		c.NS_MariaDB_User,
 		c.NS_MariaDB_Password,
 		c.NS_MariaDB_Hostname,
 		c.NS_MariaDB_Database,

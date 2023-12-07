@@ -17,7 +17,7 @@ type Config struct {
 	Log_Chan_ID         string `json:"log_chan_id,omitempty"`         // エラーログを送信するチャンネルの ID (default: "")
 	NS_MariaDB_Hostname string `json:"ns_mariadb_hostname,omitempty"` // DB のホスト (default: "mariadb")
 	NS_MariaDB_Database string `json:"ns_mariadb_database,omitempty"` // DB の DB 名 (default: "SchMes")
-	NS_MariaDB_Username string `json:"ns_mariadb_username,omitempty"` // DB のユーザー名 (default: "root")
+	NS_MariaDB_User     string `json:"ns_mariadb_user,omitempty"`     // DB のユーザー名 (default: "root")
 	NS_MariaDB_Password string `json:"ns_mariadb_password,omitempty"` // DB のパスワード (default: "password")
 }
 
@@ -27,7 +27,7 @@ func GetConfig() (*Config, error) {
 	viper.SetDefault("Dev_Mode", false)
 	viper.SetDefault("NS_MariaDB_Hostname", "localhost")
 	viper.SetDefault("NS_MariaDB_Database", "SchMes")
-	viper.SetDefault("NS_MariaDB_Username", "root")
+	viper.SetDefault("NS_MariaDB_User", "root")
 	viper.SetDefault("NS_MariaDB_Password", "password")
 
 	// 環境変数の読み込み

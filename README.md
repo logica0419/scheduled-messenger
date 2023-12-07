@@ -18,7 +18,7 @@ Botからのアクセストークン (default: "")
 DB のホスト (default: "mariadb")
 - `NS_MARIADB_DATABASE`  
 DB の DB 名 (default: "SchMes")
-- `NS_MARIADB_USERNAME`  
+- `NS_MARIADB_USER`  
 DB のユーザー名 (default: "root")
 - `NS_MARIADB_PASSWORD`  
 DB のパスワード (default: "password")
@@ -38,7 +38,7 @@ export BOT_ACCESS_TOKEN=
 export LOG_CHAN_ID=
 export NS_MARIADB_HOSTNAME=
 export NS_MARIADB_DATABASE=
-export NS_MARIADB_USERNAME=
+export NS_MARIADB_USER=
 export NS_MARIADB_PASSWORD=
 
 go run ./*.go
