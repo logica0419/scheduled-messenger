@@ -49,7 +49,7 @@ func GetConfig() (*Config, error) {
 	}
 
 	// 設定格納用変数
-	var c *Config
+	var c Config
 
 	// 設定格納用変数に設定を移す
 	err := viper.Unmarshal(&c)
@@ -57,5 +57,5 @@ func GetConfig() (*Config, error) {
 		return nil, fmt.Errorf("Error: failed to parse configs - %s ", err)
 	}
 
-	return c, nil
+	return &c, nil
 }
