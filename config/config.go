@@ -1,6 +1,7 @@
 package config
 
 import (
+	"errors"
 	"fmt"
 	"log"
 
@@ -37,7 +38,7 @@ func GetConfig() (*Config, error) {
 	viper.SetConfigName("config")
 	viper.SetConfigType("json")
 	if err := viper.ReadInConfig(); err != nil {
-		if _, ok := err.(viper.ConfigFileNotFoundError); ok {
+		if errors.As(err, &viper.ConfigFileNotFoundError{}) {
 			log.Print("Unable to find config.json, default settings or environmental variables are to be used.")
 		} else {
 			return nil, fmt.Errorf("Error: failed to load config.json - %s ", err)
