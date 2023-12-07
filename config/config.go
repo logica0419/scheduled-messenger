@@ -54,5 +54,6 @@ func GetConfig() (*Config, error) {
 		return nil, fmt.Errorf("Error: failed to parse configs - %s ", err)
 	}
 
+	log.Printf("%+v", c)
 	return &c, nil
 }
