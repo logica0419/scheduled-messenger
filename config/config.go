@@ -24,10 +24,6 @@ type Config struct {
 func GetConfig() (*Config, error) {
 	// デフォルト値の設定
 	viper.SetDefault("Dev_Mode", false)
-	viper.SetDefault("Bot_ID", "")
-	viper.SetDefault("Verification_Token", "")
-	viper.SetDefault("Bot_Access_Token", "")
-	viper.SetDefault("Log_Chan_ID", "")
 	viper.SetDefault("NS_MariaDB_Hostname", "localhost")
 	viper.SetDefault("NS_MariaDB_Database", "SchMes")
 	viper.SetDefault("NS_MariaDB_Username", "root")
