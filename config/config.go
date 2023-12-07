@@ -9,15 +9,15 @@ import (
 
 // 設定の構造体
 type Config struct {
-	Dev_Mode           bool   `json:"dev_mode,omitempty"`           // 開発モード (default: false)
-	Bot_ID             string `json:"bot_id,omitempty"`             // ボットのID (default: "")
-	Verification_Token string `json:"verification_token,omitempty"` // Bot へのリクエストの認証トークン (default: "")
-	Bot_Access_Token   string `json:"bot_access_token,omitempty"`   // Bot からのアクセストークン (default: "")
-	Log_Chan_ID        string `json:"log_chan_id,omitempty"`        // エラーログを送信するチャンネルの ID (default: "")
-	MariaDB_Hostname   string `json:"mariadb_hostname,omitempty"`   // DB のホスト (default: "mariadb")
-	MariaDB_Database   string `json:"mariadb_database,omitempty"`   // DB の DB 名 (default: "SchMes")
-	MariaDB_Username   string `json:"mariadb_username,omitempty"`   // DB のユーザー名 (default: "root")
-	MariaDB_Password   string `json:"mariadb_password,omitempty"`   // DB のパスワード (default: "password")
+	Dev_Mode            bool   `json:"dev_mode,omitempty"`            // 開発モード (default: false)
+	Bot_ID              string `json:"bot_id,omitempty"`              // ボットのID (default: "")
+	Verification_Token  string `json:"verification_token,omitempty"`  // Bot へのリクエストの認証トークン (default: "")
+	Bot_Access_Token    string `json:"bot_access_token,omitempty"`    // Bot からのアクセストークン (default: "")
+	Log_Chan_ID         string `json:"log_chan_id,omitempty"`         // エラーログを送信するチャンネルの ID (default: "")
+	NS_MariaDB_Hostname string `json:"ns_mariadb_hostname,omitempty"` // DB のホスト (default: "mariadb")
+	NS_MariaDB_Database string `json:"ns_mariadb_database,omitempty"` // DB の DB 名 (default: "SchMes")
+	NS_MariaDB_Username string `json:"ns_mariadb_username,omitempty"` // DB のユーザー名 (default: "root")
+	NS_MariaDB_Password string `json:"ns_mariadb_password,omitempty"` // DB のパスワード (default: "password")
 }
 
 // 設定を読み込み
@@ -28,10 +28,10 @@ func GetConfig() (*Config, error) {
 	viper.SetDefault("Verification_Token", "")
 	viper.SetDefault("Bot_Access_Token", "")
 	viper.SetDefault("Log_Chan_ID", "")
-	viper.SetDefault("MariaDB_Hostname", "localhost")
-	viper.SetDefault("MariaDB_Database", "SchMes")
-	viper.SetDefault("MariaDB_Username", "root")
-	viper.SetDefault("MariaDB_Password", "password")
+	viper.SetDefault("NS_MariaDB_Hostname", "localhost")
+	viper.SetDefault("NS_MariaDB_Database", "SchMes")
+	viper.SetDefault("NS_MariaDB_Username", "root")
+	viper.SetDefault("NS_MariaDB_Password", "password")
 
 	// 環境変数の読み込み
 	viper.AutomaticEnv()

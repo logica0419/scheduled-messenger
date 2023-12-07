@@ -14,13 +14,13 @@ Botへのリクエストの認証トークン (default: "")
 Botからのアクセストークン (default: "")
 - `LOG_CHAN_ID`  
 エラーログを送信するチャンネルのID (default: "")
-- `MARIADB_HOSTNAME`  
+- `NS_MARIADB_HOSTNAME`  
 DB のホスト (default: "mariadb")
-- `MARIADB_DATABASE`  
+- `NS_MARIADB_DATABASE`  
 DB の DB 名 (default: "SchMes")
-- `MARIADB_USERNAME`  
+- `NS_MARIADB_USERNAME`  
 DB のユーザー名 (default: "root")
-- `MARIADB_PASSWORD`  
+- `NS_MARIADB_PASSWORD`  
 DB のパスワード (default: "password")
 
 ## ローカルで動かすときのサンプル
@@ -36,13 +36,13 @@ export BOT_ID=
 export VERIFICATION_TOKEN=
 export BOT_ACCESS_TOKEN=
 export LOG_CHAN_ID=
-export MARIADB_HOSTNAME=
-export MARIADB_DATABASE=
-export MARIADB_USERNAME=
-export MARIADB_PASSWORD=
+export NS_MARIADB_HOSTNAME=
+export NS_MARIADB_DATABASE=
+export NS_MARIADB_USERNAME=
+export NS_MARIADB_PASSWORD=
 
 go run ./*.go
 ```
 
-MariaDBが`{MARIADB_HOSTNAME}:3306`(デフォルトのポート)で立っていることを確認してください。  
+MariaDBが`{NS_MARIADB_HOSTNAME}:3306`(デフォルトのポート)で立っていることを確認してください。  
 ポート`8080`でサーバーが立つので、`localhost:8080`のエンドポイントにリクエストを送り、レスポンスを確かめてください。
