@@ -17,7 +17,7 @@ func CreateHelpMessage() string {
 
 // チャンネルに JOINED した際のメッセージを生成
 func CreateJoinedMessage(path string) string {
-	return fmt.Sprintf("これから Scheduled Messenher は`%s`に投稿されるメッセージをチェックします!\nいつでも呼んで下さい!", path)
+	return fmt.Sprintf("これから Scheduled Messenger は`%s`に投稿されるメッセージをチェックします!\nいつでも呼んで下さい!", path)
 }
 
 // チャンネルから LEFT した際のメッセージを生成
