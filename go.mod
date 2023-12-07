@@ -1,6 +1,6 @@
 module github.com/logica0419/scheduled-messenger-bot
 
-go 1.19
+go 1.21.5
 
 require (
 	github.com/akamensky/argparse v1.4.0
