@@ -15,11 +15,13 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      - name: golangci-lint
-        uses: golangci/golangci-lint-action@v3
+      - name: Run golangci-lint
+        uses: reviewdog/action-golangci-lint@v2
         with:
-          version: latest
-          args: '--timeout 3m0s'
+          go_version_file: go.mod
+          fail_on_error: true
+          filter_mode: nofilter
+          golangci_lint_flags: --timeout=10m
   mod:
     name: Module Download
     runs-on: ubuntu-latest
