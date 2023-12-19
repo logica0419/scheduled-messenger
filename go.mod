@@ -10,7 +10,7 @@ require (
 	github.com/labstack/gommon v0.4.1
 	github.com/patrickmn/go-cache v2.1.0+incompatible
 	github.com/robfig/cron/v3 v3.0.1
-	github.com/spf13/viper v1.18.1
+	github.com/spf13/viper v1.18.2
 	github.com/stretchr/testify v1.8.4
 	gorm.io/driver/mysql v1.5.2
 	gorm.io/gorm v1.25.5
