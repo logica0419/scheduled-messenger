@@ -1,6 +1,7 @@
 module github.com/logica0419/scheduled-messenger-bot
 
 go 1.21.5
+
 toolchain go1.24.1
 
 require (
@@ -14,7 +15,7 @@ require (
 	github.com/spf13/viper v1.20.0
 	github.com/stretchr/testify v1.10.0
 	gorm.io/driver/mysql v1.5.7
-	gorm.io/gorm v1.25.11
+	gorm.io/gorm v1.26.0
 )
 
 require (
